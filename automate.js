@@ -71,88 +71,50 @@ const CONFIG = {
   PARENT: {
 
     FAMILY_SN: 1,
-
     PARENT_NAME: 2,
-
     PHONE: 3,
-
-    PARENT_NO: 1,
+    FAMILY_ID: 4,       // D - permanent family automation key
+    PARENT_NO: 1,       // display only
 
     CHILD_SN: 5,
-
     STUDENT_NAME: 6,
-
-    STUDENT_NO: 7,
-
-    STUDENT_CLASS: 8,
-
-    GENDER: 9,
-
-    SCHOOL_FEE: 10,
-
-    LESSON: 11,
-
-    OTHER_PAYMENT: 12,
-
-    OTHER_PAYMENT_TOTAL: 13,
-
-    PRESENT_TERM_SCHOOL_FEES_TOTAL: 15,
-
-    USES_BUS: 16,
-
-    BUS_FEE: 17,
-
-    BUS_FAMILY_TOTAL: 18,
-
-    INDIVIDUAL_CURRENT_TERM_TOTAL: 19,
-
-    FAMILY_CURRENT_TERM_TOTAL: 20,
-
-    INDIVIDUAL_BROUGHT_FORWARD: 21,
-
-    FAMILY_BROUGHT_FORWARD: 22,
-
-    INDIVIDUAL_TOTAL_DUE: 24,
-
-    FAMILY_TOTAL_DUE: 25,
-
-    PAYMENT_1_INDIVIDUAL: 26,
-
-    PAYMENT_1_FAMILY: 27,
-
-    INDIVIDUAL_OLD_OUTSTANDING: 28,
-
-    PAYMENT_1_DATE: 29,
-
-    PAYMENT_1_RECEIPT: 30,
-
-    BALANCE_1_FAMILY: 31,
-
-    BALANCE_1_INDIVIDUAL: 32,
-
-    PAYMENT_2_INDIVIDUAL: 33,
-
-    PAYMENT_2_FAMILY: 34,
-
-    PAYMENT_2_DATE: 35,
-
-    PAYMENT_2_RECEIPT: 36,
-
-    BALANCE_2_FAMILY: 37,
-
-    BALANCE_2_INDIVIDUAL: 38,
-
-    PAYMENT_3_INDIVIDUAL: 39,
-
-    PAYMENT_3_FAMILY: 40,
-
-    PAYMENT_3_DATE: 41,
-
-    PAYMENT_3_RECEIPT: 42,
-
-    BALANCE_3_FAMILY: 43,
-
-    BALANCE_3_INDIVIDUAL: 44
+    STUDENT_NO: 7,      // display only
+    STUDENT_ID: 8,      // permanent student automation key
+    STUDENT_CLASS: 9,
+    GENDER: 10,
+    SCHOOL_FEE: 11,
+    LESSON: 12,
+    OTHER_PAYMENT: 13,
+    OTHER_PAYMENT_TOTAL: 14,
+    PRESENT_TERM_SCHOOL_FEES_TOTAL: 16,
+    USES_BUS: 17,
+    BUS_FEE: 18,
+    BUS_FAMILY_TOTAL: 19,
+    INDIVIDUAL_CURRENT_TERM_TOTAL: 20,
+    FAMILY_CURRENT_TERM_TOTAL: 21,
+    INDIVIDUAL_BROUGHT_FORWARD: 22,
+    FAMILY_BROUGHT_FORWARD: 23,
+    INDIVIDUAL_TOTAL_DUE: 25,
+    FAMILY_TOTAL_DUE: 26,
+    PAYMENT_1_INDIVIDUAL: 27,
+    PAYMENT_1_FAMILY: 28,
+    INDIVIDUAL_OLD_OUTSTANDING: 29,
+    PAYMENT_1_DATE: 30,
+    PAYMENT_1_RECEIPT: 31,
+    BALANCE_1_FAMILY: 32,
+    BALANCE_1_INDIVIDUAL: 33,
+    PAYMENT_2_INDIVIDUAL: 34,
+    PAYMENT_2_FAMILY: 35,
+    PAYMENT_2_DATE: 36,
+    PAYMENT_2_RECEIPT: 37,
+    BALANCE_2_FAMILY: 38,
+    BALANCE_2_INDIVIDUAL: 39,
+    PAYMENT_3_INDIVIDUAL: 40,
+    PAYMENT_3_FAMILY: 41,
+    PAYMENT_3_DATE: 42,
+    PAYMENT_3_RECEIPT: 43,
+    BALANCE_3_FAMILY: 44,
+    BALANCE_3_INDIVIDUAL: 45
   },
 
 
@@ -170,46 +132,51 @@ const CONFIG = {
 
   INFLOW: {
 
-    SN: 1,
+  SN: 1,
 
-    DATE: 2,
+  DATE: 2,
 
-    PAYEE: 3,
+  PAYEE: 3,
 
-    PARENT_NO: 4,
+  PARENT_NO: 4,
 
-    AMOUNT_RECEIVED: 5,
+  FAMILY_ID: 5,
 
-    SCHOOL_FEES: 6,
+  AMOUNT_RECEIVED: 6,
 
-    OUTSTANDING_SCHOOL_FEES: 7,
+  SCHOOL_FEES: 7,
 
-    REGISTRATION: 8,
+  OUTSTANDING_SCHOOL_FEES: 8,
 
-    TEXTBOOKS: 9,
+  REGISTRATION: 9,
 
-    // Column J = 10 is blank in your current layout
+  TEXTBOOKS: 10,
 
-    GRADUATION: 11,
+  // Column K = 11
+  // Name and Class of Pupils/Student
 
-    UNIFORMS: 12,
+  GRADUATION: 12,
 
-    SPORTS_WEAR: 13,
+  UNIFORMS: 13,
 
-    BUS_FEES: 14,
+  SPORTS_WEAR: 14,
 
-    LESSON: 15,
+  FRIDAY_WEAR: 15,
 
-    COMMON_ENTRANCE: 16,
+  BUS_FEES: 16,
 
-    JUNIOR_WAEC: 17,
+  LESSON: 17,
 
-    OTHERS: 18,
+  COMMON_ENTRANCE: 18,
 
-    TOTAL: 19,
+  JUNIOR_WAEC: 19,
 
-    REMARK: 20
-  },
+  OTHERS: 20,
+
+  TOTAL: 21,
+
+  REMARK: 22
+},
 
 
   // -------------------------
@@ -218,36 +185,28 @@ const CONFIG = {
 
   STUDENT: {
 
-    STUDENT_NO: 1,       // A
+  STUDENT_NO: 1,       // A - Nos
+  STUDENT_NAME: 2,     // B - Name
+  CLASS: 3,            // C - Class
+  ADMISSION_YEAR: 4,   // D - Admission Year
+  STUDENT_ID: 5,       // E - Student ID
 
-    STUDENT_NAME: 2,     // B
-
-    CLASS: 3,            // C
-
-    ADMISSION_YEAR: 4,   // D
-
-    SCHOOL_FEE: 5,       // E
-
-    LESSON: 6,           // F
-
-    TEXTBOOK: 7,         // G
-
-    NOTEBOOK: 8,         // H
-
-    UNIFORM: 9,          // I
-
-    CLUBS: 10,           // J
-
-    OUTSTANDING: 13,     // M
-
-    TOTAL: 14,           // N
-
-    AMOUNT_PAID: 15,     // O
-
-    AMOUNT_OWING: 16,    // P
-
-    COMMENTS: 17         // Q
-  },
+  SCHOOL_FEE: 6,       // F
+  LESSON: 7,           // G
+  TEXTBOOK: 8,         // H
+  NOTEBOOK: 9,         // I
+  UNIFORM: 10,         // J
+  SPORTS_WEAR: 11,     // K
+  FRIDAY_WEAR: 12,     // L
+  CLUBS: 13,           // M
+  BUS: 14,             // N
+  OTHERS: 15,          // O
+  OUTSTANDING: 16,     // P
+  TOTAL: 17,           // Q
+  AMOUNT_PAID: 18,     // R
+  AMOUNT_OWING: 19,    // S
+  COMMENTS: 20         // T
+},
 
 
   TOLERANCE: 0.01
@@ -270,7 +229,7 @@ function onOpen() {
     )
     .addSeparator()
     .addItem(
-      '2. Sync Student Numbers',
+      '2. Sync Student IDs & Numbers',
       'syncStudentNumbers'
     )
     .addItem(
@@ -312,6 +271,8 @@ function initialSetup() {
   createAllocationEntrySheet();
 
   ensureInflowAutomationColumns();
+
+  migrateLegacyHistoryToPermanentIds();
 
   createPaymentBaseline();
 
@@ -484,79 +445,19 @@ function getStudentWorkbook() {
  ************************************************************/
 
 function createAllocationLog() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(CONFIG.ALLOCATION_LOG_SHEET);
+  if (!sheet) sheet = ss.insertSheet(CONFIG.ALLOCATION_LOG_SHEET);
 
-  const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-  let sheet =
-    ss.getSheetByName(
-      CONFIG.ALLOCATION_LOG_SHEET
-    );
-
-  if (!sheet) {
-
-    sheet =
-      ss.insertSheet(
-        CONFIG.ALLOCATION_LOG_SHEET
-      );
-
-  }
-
+  // Keep the original 14 columns in place so existing allocation history is not shifted.
   const headers = [[
-
-    'Allocation ID',
-
-    'Payment ID',
-
-    'Payment Date',
-
-    'Parent No',
-
-    'Parent / Payee',
-
-    'Student No',
-
-    'Student Name',
-
-    'Class',
-
-    'Category',
-
-    'Amount',
-
-    'Receipt No',
-
-    'Remarks',
-
-    'Entered By',
-
-    'Logged At'
-
+    'Allocation ID', 'Payment ID', 'Payment Date', 'Parent No',
+    'Parent / Payee', 'Student No', 'Student Name', 'Class',
+    'Category', 'Amount', 'Receipt No', 'Remarks', 'Entered By', 'Logged At',
+    'Family ID', 'Student ID'
   ]];
-
-
-  sheet
-    .getRange(
-      1,
-      1,
-      1,
-      headers[0].length
-    )
-    .setValues(headers);
-
-
-  sheet
-    .getRange(
-      1,
-      1,
-      1,
-      headers[0].length
-    )
-    .setFontWeight('bold');
-
-
+  sheet.getRange(1, 1, 1, headers[0].length).setValues(headers).setFontWeight('bold');
   sheet.setFrozenRows(1);
-
 }
 
 
@@ -571,87 +472,27 @@ function createAllocationLog() {
  ************************************************************/
 
 function createAllocationEntrySheet() {
-
-  const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-  let sheet =
-    ss.getSheetByName(
-      CONFIG.ALLOCATION_ENTRY_SHEET
-    );
-
-
-  if (!sheet) {
-
-    sheet =
-      ss.insertSheet(
-        CONFIG.ALLOCATION_ENTRY_SHEET
-      );
-
-  }
-
-
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(CONFIG.ALLOCATION_ENTRY_SHEET);
+  if (!sheet) sheet = ss.insertSheet(CONFIG.ALLOCATION_ENTRY_SHEET);
   sheet.clear();
 
-
-  sheet
-    .getRange('A1')
-    .setValue(
-      'PAYMENT ALLOCATION'
-    )
-    .setFontWeight('bold')
-    .setFontSize(14);
-
-
+  sheet.getRange('A1').setValue('PAYMENT ALLOCATION').setFontWeight('bold').setFontSize(14);
   sheet.getRange('A3').setValue('Payment ID');
-
   sheet.getRange('A4').setValue('Payment Date');
-
   sheet.getRange('A5').setValue('Parent No');
-
-  sheet.getRange('A6').setValue('Parent / Payee');
-
-  sheet.getRange('A7').setValue('Amount Received');
-
-  sheet.getRange('A8').setValue('Already Allocated');
-
-  sheet.getRange('A9').setValue('Remaining To Allocate');
-
+  sheet.getRange('A6').setValue('Family ID');
+  sheet.getRange('A7').setValue('Parent / Payee');
+  sheet.getRange('A8').setValue('Amount Received');
+  sheet.getRange('A9').setValue('Already Allocated');
+  sheet.getRange('A10').setValue('Remaining To Allocate');
 
   const headers = [[
-
-  'Student No',
-
-  'Student Name',
-
-  'Class',
-
-  'Amount Due',
-
-  'Category',
-
-  'Category Available',
-
-  'Amount To Allocate',
-
-  'Remarks'
-
-]];
-
-
-  sheet
-    .getRange(
-      11,
-      1,
-      1,
-      headers[0].length
-    )
-    .setValues(headers)
-    .setFontWeight('bold');
-
-
-  sheet.setFrozenRows(11);
-
+    'Student No', 'Student Name', 'Class', 'Amount Due',
+    'Category', 'Category Available', 'Amount To Allocate', 'Remarks', 'Student ID'
+  ]];
+  sheet.getRange(12, 1, 1, headers[0].length).setValues(headers).setFontWeight('bold');
+  sheet.setFrozenRows(12);
 }
 
 
@@ -775,7 +616,57 @@ function findHeaderColumn(
 
 }
 
+function findHeaderColumnInRows(
+  sheet,
+  header,
+  startRow,
+  endRow
+) {
 
+  const numRows =
+    endRow - startRow + 1;
+
+
+  const values =
+    sheet
+      .getRange(
+        startRow,
+        1,
+        numRows,
+        sheet.getLastColumn()
+      )
+      .getDisplayValues();
+
+
+  for (
+    let r = 0;
+    r < values.length;
+    r++
+  ) {
+
+    for (
+      let c = 0;
+      c < values[r].length;
+      c++
+    ) {
+
+      if (
+        String(values[r][c])
+          .trim() === header
+      ) {
+
+        return c + 1;
+
+      }
+
+    }
+
+  }
+
+
+  return 0;
+
+}
 
 /************************************************************
  * GENERATE PAYMENT ID
@@ -909,45 +800,73 @@ function ensurePaymentId(
  ************************************************************/
 function syncStudentNumbers() {
 
-  validateConfiguration();
-
   const financeSS =
     SpreadsheetApp.getActiveSpreadsheet();
+
 
   const parentSheet =
     financeSS.getSheetByName(
       CONFIG.PARENT_STUDENT_SHEET
     );
 
-  if (!parentSheet) {
-    throw new Error(
-      'Parent/Student sheet was not found: ' +
-      CONFIG.PARENT_STUDENT_SHEET
-    );
-  }
 
   const studentSS =
     getStudentWorkbook();
+
 
   const studentSheet =
     studentSS.getSheetByName(
       CONFIG.STUDENT_MASTER_SHEET
     );
 
-  if (!studentSheet) {
+
+  if (!parentSheet) {
+
     throw new Error(
-      'Student Master sheet was not found: ' +
-      CONFIG.STUDENT_MASTER_SHEET
+      'Parent/Student Financial Record sheet was not found.'
     );
+
   }
 
-  const issueSheet =
-    prepareSyncIssuesSheetBothWays();
 
-  const studentData =
-    studentSheet
-      .getDataRange()
-      .getValues();
+  if (!studentSheet) {
+
+    throw new Error(
+      'Student Master sheet was not found.'
+    );
+
+  }
+
+
+  /************************************************************
+   * FIND STUDENT ID COLUMNS
+   ************************************************************/
+
+ const parentStudentIdCol =
+  CONFIG.PARENT.STUDENT_ID;
+
+
+  const studentMasterIdCol =
+    findHeaderColumn(
+      studentSheet,
+      'Student ID'
+    );
+
+
+
+
+  if (!studentMasterIdCol) {
+
+    throw new Error(
+      'Student ID column was not found on Student Master.'
+    );
+
+  }
+
+
+  /************************************************************
+   * READ DATA
+   ************************************************************/
 
   const parentData =
     parentSheet
@@ -955,14 +874,22 @@ function syncStudentNumbers() {
       .getValues();
 
 
-  /********************************************************
+  const studentData =
+    studentSheet
+      .getDataRange()
+      .getValues();
+
+
+  /************************************************************
    * BUILD STUDENT MASTER LOOKUP
-   ********************************************************/
+   *
+   * Student ID -> Student information
+   ************************************************************/
 
   const studentLookup = {};
 
-  const duplicateStudentKeys =
-    new Set();
+  const duplicateStudentIds = {};
+
 
   for (
     let i = 1;
@@ -970,123 +897,126 @@ function syncStudentNumbers() {
     i++
   ) {
 
+    const studentId =
+      normalizeId(
+        studentData[i]
+          [studentMasterIdCol - 1]
+      );
+
+
+    if (!studentId) {
+      continue;
+    }
+
+
     const studentNo =
-      studentData[i]
-        [CONFIG.STUDENT.STUDENT_NO - 1];
+      normalizeId(
+        studentData[i]
+          [CONFIG.STUDENT.STUDENT_NO - 1]
+      );
+
 
     const studentName =
       studentData[i]
         [CONFIG.STUDENT.STUDENT_NAME - 1];
 
+
     const studentClass =
       studentData[i]
         [CONFIG.STUDENT.CLASS - 1];
 
+
     if (
-      !studentName ||
-      !studentClass
+      studentLookup[studentId]
     ) {
+
+      duplicateStudentIds[studentId] = true;
+
       continue;
+
     }
 
-    const key =
-      studentMatchKey(
+
+    studentLookup[studentId] = {
+
+      studentNo:
+        studentNo,
+
+      studentName:
         studentName,
-        studentClass
-      );
 
-    if (studentLookup[key]) {
+      studentClass:
+        studentClass,
 
-      duplicateStudentKeys.add(key);
+      row:
+        i + 1
 
-    } else {
-
-      studentLookup[key] = {
-        row: i + 1,
-        studentNo: studentNo,
-        studentName: studentName,
-        studentClass: studentClass
-      };
-
-    }
+    };
 
   }
 
 
-  /********************************************************
-   * BUILD PARENT/STUDENT LOOKUP
-   ********************************************************/
+  /************************************************************
+   * PREPARE SYNC ISSUES SHEET
+   ************************************************************/
 
-  const parentLookup = {};
+  let issuesSheet =
+    financeSS.getSheetByName(
+      CONFIG.SYNC_ISSUES_SHEET
+    );
 
-  const duplicateParentKeys =
-    new Set();
 
-  for (
-    let i = 3;
-    i < parentData.length;
-    i++
-  ) {
+  if (!issuesSheet) {
 
-    const studentName =
-      parentData[i]
-        [CONFIG.PARENT.STUDENT_NAME - 1];
-
-    const studentClass =
-      parentData[i]
-        [CONFIG.PARENT.STUDENT_CLASS - 1];
-
-    const existingStudentNo =
-      parentData[i]
-        [CONFIG.PARENT.STUDENT_NO - 1];
-
-    if (
-      !studentName ||
-      !studentClass
-    ) {
-      continue;
-    }
-
-    const key =
-      studentMatchKey(
-        studentName,
-        studentClass
+    issuesSheet =
+      financeSS.insertSheet(
+        CONFIG.SYNC_ISSUES_SHEET
       );
-
-    if (parentLookup[key]) {
-
-      duplicateParentKeys.add(key);
-
-    } else {
-
-      parentLookup[key] = {
-        row: i + 1,
-        studentNo: existingStudentNo,
-        studentName: studentName,
-        studentClass: studentClass
-      };
-
-    }
 
   }
 
 
-  /********************************************************
-   * SYNC STUDENT NUMBERS INTO PARENT/STUDENT
-   ********************************************************/
+  issuesSheet.clearContents();
 
-  const studentNumberOutput = [];
 
-  const issueRows = [];
+  issuesSheet
+    .getRange(
+      1,
+      1,
+      1,
+      7
+    )
+    .setValues([
+      [
+        'Issue Type',
+        'Student ID',
+        'Student Name',
+        'Class',
+        'Current Student No',
+        'Master Student No',
+        'Source Row'
+      ]
+    ]);
+
+
+  const issues = [];
+
 
   let matched = 0;
 
   let unmatchedParent = 0;
 
-  let unmatchedMaster = 0;
+  let missingStudentId = 0;
 
   let duplicateCount = 0;
 
+
+  /************************************************************
+   * UPDATE PARENT MASTER
+   *
+   * Rows 1-3 are headers
+   * Data starts row 4
+   ************************************************************/
 
   for (
     let i = 3;
@@ -1098,265 +1028,229 @@ function syncStudentNumbers() {
       parentData[i]
         [CONFIG.PARENT.STUDENT_NAME - 1];
 
+
+    if (
+      !normalize(studentName)
+    ) {
+      continue;
+    }
+
+
+    const studentId =
+      normalizeId(
+        parentData[i]
+          [parentStudentIdCol - 1]
+      );
+
+
+    const currentStudentNo =
+      normalizeId(
+        parentData[i]
+          [CONFIG.PARENT.STUDENT_NO - 1]
+      );
+
+
     const studentClass =
       parentData[i]
         [CONFIG.PARENT.STUDENT_CLASS - 1];
 
-    const existingStudentNo =
-      parentData[i]
-        [CONFIG.PARENT.STUDENT_NO - 1];
 
-    if (
-      !studentName ||
-      !studentClass
-    ) {
+    if (!studentId) {
 
-      studentNumberOutput.push([
-        existingStudentNo
+      missingStudentId++;
+
+
+      issues.push([
+        'MISSING STUDENT ID',
+        '',
+        studentName,
+        studentClass,
+        currentStudentNo,
+        '',
+        i + 1
       ]);
+
 
       continue;
 
     }
 
-    const key =
-      studentMatchKey(
-        studentName,
-        studentClass
-      );
-
-
-    /******************************************************
-     * DUPLICATE / AMBIGUOUS
-     ******************************************************/
 
     if (
-      duplicateStudentKeys.has(key) ||
-      duplicateParentKeys.has(key)
+      duplicateStudentIds[studentId]
     ) {
-
-      studentNumberOutput.push([
-        existingStudentNo || ''
-      ]);
-
-      issueRows.push([
-        'AMBIGUOUS',
-        i + 1,
-        '',
-        studentName,
-        studentClass,
-        existingStudentNo,
-        'Duplicate Name + Class found',
-        normalize(studentName),
-        normalizeClass(studentClass)
-      ]);
 
       duplicateCount++;
 
-      continue;
 
-    }
-
-
-    /******************************************************
-     * MATCH FOUND
-     ******************************************************/
-
-    if (studentLookup[key]) {
-
-      studentNumberOutput.push([
-        studentLookup[key].studentNo
-      ]);
-
-      matched++;
-
-      continue;
-
-    }
-
-
-    /******************************************************
-     * EXISTS ON PARENT/STUDENT BUT NOT STUDENT MASTER
-     ******************************************************/
-
-    studentNumberOutput.push([
-      existingStudentNo || ''
-    ]);
-
-    issueRows.push([
-      'PARENT/STUDENT ONLY',
-      i + 1,
-      '',
-      studentName,
-      studentClass,
-      existingStudentNo,
-      'Exists on Parent/Student but no match was found on Student Master',
-      normalize(studentName),
-      normalizeClass(studentClass)
-    ]);
-
-    unmatchedParent++;
-
-  }
-
-
-  /********************************************************
-   * FIND STUDENTS THAT EXIST ON STUDENT MASTER
-   * BUT NOT ON PARENT/STUDENT
-   ********************************************************/
-
-  for (
-    let i = 1;
-    i < studentData.length;
-    i++
-  ) {
-
-    const studentNo =
-      studentData[i]
-        [CONFIG.STUDENT.STUDENT_NO - 1];
-
-    const studentName =
-      studentData[i]
-        [CONFIG.STUDENT.STUDENT_NAME - 1];
-
-    const studentClass =
-      studentData[i]
-        [CONFIG.STUDENT.CLASS - 1];
-
-    if (
-      !studentName ||
-      !studentClass
-    ) {
-      continue;
-    }
-
-    const key =
-      studentMatchKey(
-        studentName,
-        studentClass
-      );
-
-    if (
-      duplicateStudentKeys.has(key) ||
-      duplicateParentKeys.has(key)
-    ) {
-      continue;
-    }
-
-    if (!parentLookup[key]) {
-
-      issueRows.push([
-        'STUDENT MASTER ONLY',
-        '',
-        i + 1,
+      issues.push([
+        'DUPLICATE STUDENT ID IN STUDENT MASTER',
+        studentId,
         studentName,
         studentClass,
-        studentNo,
-        'Exists on Student Master but no match was found on Parent/Student',
-        normalize(studentName),
-        normalizeClass(studentClass)
+        currentStudentNo,
+        '',
+        i + 1
       ]);
 
-      unmatchedMaster++;
+
+      continue;
 
     }
 
-  }
+
+    const match =
+      studentLookup[studentId];
 
 
-  /********************************************************
-   * WRITE STUDENT NUMBERS
-   ********************************************************/
+    if (!match) {
 
-  if (
-    studentNumberOutput.length
-  ) {
+      unmatchedParent++;
+
+
+      issues.push([
+        'STUDENT ID NOT FOUND IN STUDENT MASTER',
+        studentId,
+        studentName,
+        studentClass,
+        currentStudentNo,
+        '',
+        i + 1
+      ]);
+
+
+      continue;
+
+    }
+
 
     parentSheet
       .getRange(
-        4,
-        CONFIG.PARENT.STUDENT_NO,
-        studentNumberOutput.length,
-        1
+        i + 1,
+        CONFIG.PARENT.STUDENT_NO
       )
-      .setValues(
-        studentNumberOutput
+      .setValue(
+        match.studentNo
       );
+
+
+    matched++;
 
   }
 
 
-  /********************************************************
-   * WRITE SYNC ISSUES
-   ********************************************************/
+  /************************************************************
+   * REPORT DUPLICATE STUDENT IDS
+   ************************************************************/
+
+  Object.keys(
+    duplicateStudentIds
+  ).forEach(
+    studentId => {
+
+      const match =
+        studentLookup[studentId];
+
+
+      issues.push([
+        'DUPLICATE STUDENT ID IN STUDENT MASTER',
+        studentId,
+        match
+          ? match.studentName
+          : '',
+        match
+          ? match.studentClass
+          : '',
+        '',
+        match
+          ? match.studentNo
+          : '',
+        match
+          ? match.row
+          : ''
+      ]);
+
+    }
+  );
+
+
+  /************************************************************
+   * WRITE ISSUES
+   ************************************************************/
 
   if (
-    issueRows.length
+    issues.length > 0
   ) {
 
-    issueSheet
+    issuesSheet
       .getRange(
         2,
         1,
-        issueRows.length,
-        issueRows[0].length
+        issues.length,
+        7
       )
       .setValues(
-        issueRows
+        issues
       );
 
   }
 
 
-  /********************************************************
-   * FINAL SUMMARY
-   ********************************************************/
+  /************************************************************
+   * FINAL MESSAGE
+   ************************************************************/
 
   const totalIssues =
-  unmatchedParent +
-  unmatchedMaster +
-  duplicateCount;
+    unmatchedParent +
+    missingStudentId +
+    duplicateCount;
 
-if (totalIssues > 0) {
 
-  SpreadsheetApp
-    .getUi()
-    .alert(
-      'Student Number Sync Complete\n\n' +
-      'Matched: ' +
-      matched +
-      '\n' +
-      'Parent/Student only: ' +
-      unmatchedParent +
-      '\n' +
-      'Student Master only: ' +
-      unmatchedMaster +
-      '\n' +
-      'Duplicate / ambiguous: ' +
-      duplicateCount +
-      '\n\n' +
-      'Please check the "' +
-      CONFIG.SYNC_ISSUES_SHEET +
-      '" sheet for details.'
-    );
+  if (
+    totalIssues > 0
+  ) {
 
-} else {
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        'Student Number Sync Complete\n\n' +
 
-  SpreadsheetApp
-    .getUi()
-    .alert(
-      'Student Number Sync Complete\n\n' +
-      'Matched: ' +
-      matched +
-      '\n\n' +
-      'All students matched successfully.'
-    );
+        'Matched / Updated: ' +
+        matched +
+        '\n' +
+
+        'Missing Student ID: ' +
+        missingStudentId +
+        '\n' +
+
+        'Student ID Not Found: ' +
+        unmatchedParent +
+        '\n' +
+
+        'Duplicate Student IDs: ' +
+        duplicateCount +
+        '\n\n' +
+
+        'Please check the Sync_Issues sheet.'
+      );
+
+  } else {
+
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        'Student Number Sync Complete\n\n' +
+
+        'Matched / Updated: ' +
+        matched +
+        '\n\n' +
+
+        'All students matched successfully.'
+      );
+
+  }
 
 }
-
-}
-
-
 
 /************************************************************
  * SYNC PARENT/STUDENT FEE INFORMATION
@@ -1375,223 +1269,48 @@ if (totalIssues > 0) {
  ************************************************************/
 
 function syncFeesToStudentMaster() {
-
-  const financeSS =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-
-  const parentSheet =
-    financeSS.getSheetByName(
-      CONFIG.PARENT_STUDENT_SHEET
-    );
-
-
-  const studentSS =
-    getStudentWorkbook();
-
-
-  const studentSheet =
-    studentSS.getSheetByName(
-      CONFIG.STUDENT_MASTER_SHEET
-    );
-
-
-  const parentData =
-    parentSheet
-      .getDataRange()
-      .getValues();
-
-
-  const studentData =
-    studentSheet
-      .getDataRange()
-      .getValues();
-
-
-  /*
-   * Student No -> Parent/Student financial row
-   */
-
+  const financeSS = SpreadsheetApp.getActiveSpreadsheet();
+  const parentSheet = financeSS.getSheetByName(CONFIG.PARENT_STUDENT_SHEET);
+  const studentSheet = getStudentWorkbook().getSheetByName(CONFIG.STUDENT_MASTER_SHEET);
+  const parentData = parentSheet.getDataRange().getValues();
+  const studentData = studentSheet.getDataRange().getValues();
   const financeLookup = {};
 
-
-  for (
-    let i = 3;
-    i < parentData.length;
-    i++
-  ) {
-
-    const studentNo =
-      normalizeId(
-        parentData[i]
-          [CONFIG.PARENT.STUDENT_NO - 1]
-      );
-
-
-    if (!studentNo) {
-      continue;
-    }
-
-
-    financeLookup[studentNo] = {
-
-      schoolFee:
-        money(
-          parentData[i]
-            [CONFIG.PARENT.SCHOOL_FEE - 1]
-        ),
-
-      lesson:
-        money(
-          parentData[i]
-            [CONFIG.PARENT.LESSON - 1]
-        ),
-
-      outstanding:
-        money(
-          parentData[i]
-            [
-              CONFIG.PARENT
-                .INDIVIDUAL_BROUGHT_FORWARD - 1
-            ]
-        )
-
+  for (let i = 3; i < parentData.length; i++) {
+    const studentId = normalizeId(parentData[i][CONFIG.PARENT.STUDENT_ID - 1]);
+    if (!studentId) continue;
+    financeLookup[studentId] = {
+      schoolFee: money(parentData[i][CONFIG.PARENT.SCHOOL_FEE - 1]),
+      lesson: money(parentData[i][CONFIG.PARENT.LESSON - 1]),
+      outstanding: money(parentData[i][CONFIG.PARENT.INDIVIDUAL_BROUGHT_FORWARD - 1])
     };
-
   }
 
-
-  for (
-    let i = 1;
-    i < studentData.length;
-    i++
-  ) {
-
-    const studentNo =
-      normalizeId(
-        studentData[i]
-          [CONFIG.STUDENT.STUDENT_NO - 1]
-      );
-
-
-    if (
-      !studentNo ||
-      !financeLookup[studentNo]
-    ) {
-      continue;
-    }
-
-
-    const record =
-      financeLookup[studentNo];
-
-
-    studentSheet
-      .getRange(
-        i + 1,
-        CONFIG.STUDENT.SCHOOL_FEE
-      )
-      .setValue(
-        record.schoolFee
-      );
-
-
-    studentSheet
-      .getRange(
-        i + 1,
-        CONFIG.STUDENT.LESSON
-      )
-      .setValue(
-        record.lesson
-      );
-
-
-    studentSheet
-      .getRange(
-        i + 1,
-        CONFIG.STUDENT.OUTSTANDING
-      )
-      .setValue(
-        record.outstanding
-      );
-
-
-    /*
-     * TOTAL
-     * E:M
-     */
-
-    studentSheet
-      .getRange(
-        i + 1,
-        CONFIG.STUDENT.TOTAL
-      )
-      .setFormula(
-        '=IFERROR(SUM(E' +
-        (i + 1) +
-        ':M' +
-        (i + 1) +
-        '),"")'
-      );
-
+  for (let i = 1; i < studentData.length; i++) {
+    const studentId = normalizeId(studentData[i][CONFIG.STUDENT.STUDENT_ID - 1]);
+    if (!studentId || !financeLookup[studentId]) continue;
+    const row = i + 1;
+    const record = financeLookup[studentId];
+    studentSheet.getRange(row, CONFIG.STUDENT.SCHOOL_FEE).setValue(record.schoolFee);
+    studentSheet.getRange(row, CONFIG.STUDENT.LESSON).setValue(record.lesson);
+    studentSheet.getRange(row, CONFIG.STUDENT.OUTSTANDING).setValue(record.outstanding);
+    studentSheet.getRange(row, CONFIG.STUDENT.TOTAL).setFormula('=IFERROR(SUM(F' + row + ':P' + row + '),"")');
   }
-
-
-  SpreadsheetApp
-    .getUi()
-    .alert(
-      'Fee information synced to Student Master.'
-    );
-
+  SpreadsheetApp.getUi().alert('Fee information synced to Student Master using permanent Student ID.');
 }
 
 function prepareSyncIssuesSheetBothWays() {
-
-  const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-  let sheet =
-    ss.getSheetByName(
-      CONFIG.SYNC_ISSUES_SHEET
-    );
-
-  if (!sheet) {
-
-    sheet =
-      ss.insertSheet(
-        CONFIG.SYNC_ISSUES_SHEET
-      );
-
-  }
-
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(CONFIG.SYNC_ISSUES_SHEET);
+  if (!sheet) sheet = ss.insertSheet(CONFIG.SYNC_ISSUES_SHEET);
   sheet.clear();
-
   const headers = [[
-    'Source',
-    'Parent Sheet Row',
-    'Student Master Row',
-    'Student Name',
-    'Class',
-    'Student No',
-    'Issue',
-    'Normalized Name',
-    'Normalized Class'
+    'Source', 'Parent Sheet Row', 'Student Master Row', 'Student Name', 'Class',
+    'Student No', 'Student ID', 'Issue', 'Family ID'
   ]];
-
-  sheet
-    .getRange(
-      1,
-      1,
-      1,
-      headers[0].length
-    )
-    .setValues(headers)
-    .setFontWeight('bold');
-
+  sheet.getRange(1, 1, 1, headers[0].length).setValues(headers).setFontWeight('bold');
   sheet.setFrozenRows(1);
-
   return sheet;
-
 }
 
 /************************************************************
@@ -1606,136 +1325,97 @@ function prepareSyncIssuesSheetBothWays() {
  ************************************************************/
 
 function createPaymentBaseline() {
-
-  const financeSS =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-
-  let baselineSheet =
-    financeSS.getSheetByName(
-      CONFIG.BASELINE_SHEET
-    );
-
-
-  if (!baselineSheet) {
-
-    baselineSheet =
-      financeSS.insertSheet(
-        CONFIG.BASELINE_SHEET
-      );
-
-  }
-
-
-  /*
-   * If baseline already contains data,
-   * DO NOT recreate it.
-   */
-
-  if (
-    baselineSheet.getLastRow() > 1
-  ) {
-
-    return;
-
-  }
-
-
+  const financeSS = SpreadsheetApp.getActiveSpreadsheet();
+  let baselineSheet = financeSS.getSheetByName(CONFIG.BASELINE_SHEET);
+  if (!baselineSheet) baselineSheet = financeSS.insertSheet(CONFIG.BASELINE_SHEET);
+  if (baselineSheet.getLastRow() > 1) return;
   baselineSheet.clear();
+  baselineSheet.getRange(1, 1, 1, 5).setValues([[
+    'Student ID', 'Student No', 'Student Name', 'Opening Amount Paid', 'Captured At'
+  ]]).setFontWeight('bold');
 
-
-  baselineSheet
-    .getRange(
-      1,
-      1,
-      1,
-      4
-    )
-    .setValues([[
-      'Student No',
-      'Student Name',
-      'Opening Amount Paid',
-      'Captured At'
-    ]])
-    .setFontWeight('bold');
-
-
-  const studentSS =
-    getStudentWorkbook();
-
-
-  const studentSheet =
-    studentSS.getSheetByName(
-      CONFIG.STUDENT_MASTER_SHEET
-    );
-
-
-  const data =
-    studentSheet
-      .getDataRange()
-      .getValues();
-
-
+  const studentSheet = getStudentWorkbook().getSheetByName(CONFIG.STUDENT_MASTER_SHEET);
+  const data = studentSheet.getDataRange().getValues();
   const rows = [];
-
-
-  for (
-    let i = 1;
-    i < data.length;
-    i++
-  ) {
-
-    const studentNo =
-      data[i]
-        [CONFIG.STUDENT.STUDENT_NO - 1];
-
-
-    if (!studentNo) {
-      continue;
-    }
-
-
+  for (let i = 1; i < data.length; i++) {
+    const studentId = normalizeId(data[i][CONFIG.STUDENT.STUDENT_ID - 1]);
+    if (!studentId) continue;
     rows.push([
-
-      studentNo,
-
-      data[i]
-        [CONFIG.STUDENT.STUDENT_NAME - 1],
-
-      money(
-        data[i]
-          [CONFIG.STUDENT.AMOUNT_PAID - 1]
-      ),
-
+      studentId,
+      data[i][CONFIG.STUDENT.STUDENT_NO - 1],
+      data[i][CONFIG.STUDENT.STUDENT_NAME - 1],
+      money(data[i][CONFIG.STUDENT.AMOUNT_PAID - 1]),
       new Date()
-
     ]);
-
   }
-
-
-  if (rows.length) {
-
-    baselineSheet
-      .getRange(
-        2,
-        1,
-        rows.length,
-        4
-      )
-      .setValues(rows);
-
-  }
-
-
-  /*
-   * Hide the helper sheet.
-   */
-
+  if (rows.length) baselineSheet.getRange(2, 1, rows.length, 5).setValues(rows);
   baselineSheet.hideSheet();
-
 }
 
+
+
+/************************************************************
+ * MIGRATE LEGACY HISTORY TO PERMANENT IDS
+ *
+ * Runs safely more than once. It backfills permanent Student ID
+ * and Family ID into existing baseline/allocation history while
+ * the current display numbers are still available for matching.
+ ************************************************************/
+function migrateLegacyHistoryToPermanentIds() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const parentSheet = ss.getSheetByName(CONFIG.PARENT_STUDENT_SHEET);
+  const parentData = parentSheet.getDataRange().getValues();
+  const familyIdCol =
+  findHeaderColumnInRows(
+    parentSheet,
+    'Family ID',
+    1,
+    3
+  );
+  if (!familyIdCol) throw new Error('Family ID column was not found on the Parent/Student Financial Record.');
+
+  const byStudentNo = {};
+  let currentFamilyId = '';
+  for (let i = 3; i < parentData.length; i++) {
+    if (parentData[i][familyIdCol - 1]) currentFamilyId = normalizeId(parentData[i][familyIdCol - 1]);
+    const studentNo = normalizeId(parentData[i][CONFIG.PARENT.STUDENT_NO - 1]);
+    const studentId = normalizeId(parentData[i][CONFIG.PARENT.STUDENT_ID - 1]);
+    if (studentNo && studentId) byStudentNo[studentNo] = { studentId, familyId: currentFamilyId };
+  }
+
+  const baseline = ss.getSheetByName(CONFIG.BASELINE_SHEET);
+  if (baseline && baseline.getLastRow() > 1 && !findHeaderColumn(baseline, 'Student ID')) {
+    baseline.insertColumnBefore(1);
+    baseline.getRange(1, 1).setValue('Student ID');
+    const data = baseline.getDataRange().getValues();
+    const out = [];
+    for (let i = 1; i < data.length; i++) {
+      const oldStudentNo = normalizeId(data[i][1]);
+      out.push([byStudentNo[oldStudentNo] ? byStudentNo[oldStudentNo].studentId : '']);
+    }
+    if (out.length) baseline.getRange(2, 1, out.length, 1).setValues(out);
+  }
+
+  createAllocationLog();
+  const log = ss.getSheetByName(CONFIG.ALLOCATION_LOG_SHEET);
+  if (log.getLastRow() > 1) {
+    const data = log.getDataRange().getValues();
+    const studentNoCol = findHeaderColumn(log, 'Student No');
+    const familyIdLogCol = findHeaderColumn(log, 'Family ID');
+    const studentIdLogCol = findHeaderColumn(log, 'Student ID');
+    const familyOut = [], studentOut = [];
+    for (let i = 1; i < data.length; i++) {
+      const existingFamilyId = normalizeId(data[i][familyIdLogCol - 1]);
+      const existingStudentId = normalizeId(data[i][studentIdLogCol - 1]);
+      const studentNo = normalizeId(data[i][studentNoCol - 1]);
+      const match = byStudentNo[studentNo];
+      familyOut.push([existingFamilyId || (match ? match.familyId : '')]);
+      studentOut.push([existingStudentId || (match ? match.studentId : '')]);
+    }
+    log.getRange(2, familyIdLogCol, familyOut.length, 1).setValues(familyOut);
+    log.getRange(2, studentIdLogCol, studentOut.length, 1).setValues(studentOut);
+  }
+}
 
 
 /************************************************************
@@ -1787,6 +1467,12 @@ function getPaymentCategories() {
       column:
         CONFIG.INFLOW.SPORTS_WEAR
     },
+
+    {
+  name: 'Friday Wear',
+  column:
+    CONFIG.INFLOW.FRIDAY_WEAR
+},
 
     {
       name: 'Bus Fees',
@@ -1926,160 +1612,38 @@ function getExistingAllocations(
  * once at the start of a family block.
  ************************************************************/
 
-function getChildrenForParent(
-  parentNo
-) {
-
-  const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-
-  const sheet =
-    ss.getSheetByName(
-      CONFIG.PARENT_STUDENT_SHEET
-    );
-
-
-  const data =
-    sheet
-      .getDataRange()
-      .getValues();
-
-
-  const target =
-    normalizeId(parentNo);
-
-
+function getChildrenForParent(familyId) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CONFIG.PARENT_STUDENT_SHEET);
+  const data = sheet.getDataRange().getValues();
+  const target = normalizeId(familyId);
   const children = [];
-
-
+  const seenStudents = new Set();
+  let currentFamilyId = '';
+  let currentParentName = '';
   let currentParentNo = '';
 
-  let currentParentName = '';
+  for (let i = 3; i < data.length; i++) {
+    const rawFamilyId = data[i][CONFIG.PARENT.FAMILY_ID - 1];
+    const rawParentName = data[i][CONFIG.PARENT.PARENT_NAME - 1];
+    const rawParentNo = data[i][CONFIG.PARENT.PARENT_NO - 1];
+    if (rawFamilyId) currentFamilyId = rawFamilyId;
+    if (rawParentName) currentParentName = rawParentName;
+    if (rawParentNo) currentParentNo = rawParentNo;
+    if (normalizeId(currentFamilyId) !== target) continue;
 
-
-  const seenStudents =
-    new Set();
-
-
-  for (
-    let i = 1;
-    i < data.length;
-    i++
-  ) {
-
-    const rawParentNo =
-      data[i]
-        [CONFIG.PARENT.PARENT_NO - 1];
-
-
-    const rawParentName =
-      data[i]
-        [CONFIG.PARENT.PARENT_NAME - 1];
-
-
-    if (rawParentNo) {
-
-      currentParentNo =
-        rawParentNo;
-
-    }
-
-
-    if (rawParentName) {
-
-      currentParentName =
-        rawParentName;
-
-    }
-
-
-    if (
-      normalizeId(
-        currentParentNo
-      ) !== target
-    ) {
-      continue;
-    }
-
-
-    const studentNo =
-      data[i]
-        [CONFIG.PARENT.STUDENT_NO - 1];
-
-
-    const studentName =
-      data[i]
-        [CONFIG.PARENT.STUDENT_NAME - 1];
-
-
-    const studentClass =
-      data[i]
-        [CONFIG.PARENT.STUDENT_CLASS - 1];
-
-    const amountDue =
-        money(
-      data[i]
-        [CONFIG.PARENT.INDIVIDUAL_TOTAL_DUE - 1]
-  );
-
-    
-
-
-    if (
-      !studentName ||
-      !studentClass
-    ) {
-      continue;
-    }
-
-
-    const uniqueKey =
-      normalizeId(studentNo) ||
-      studentMatchKey(
-        studentName,
-        studentClass
-      );
-
-
-    if (
-      seenStudents.has(uniqueKey)
-    ) {
-      continue;
-    }
-
-
-    seenStudents.add(
-      uniqueKey
-    );
-
-
-  children.push({
-
-  studentNo:
-    studentNo,
-
-  studentName:
-    studentName,
-
-  studentClass:
-    studentClass,
-
-  amountDue:
-    amountDue,
-
-  parentName:
-    currentParentName
-
-});
-
+    const studentId = normalizeId(data[i][CONFIG.PARENT.STUDENT_ID - 1]);
+    const studentNo = data[i][CONFIG.PARENT.STUDENT_NO - 1];
+    const studentName = data[i][CONFIG.PARENT.STUDENT_NAME - 1];
+    const studentClass = data[i][CONFIG.PARENT.STUDENT_CLASS - 1];
+    const amountDue = money(data[i][CONFIG.PARENT.INDIVIDUAL_TOTAL_DUE - 1]);
+    if (!studentId || !studentName || !studentClass) continue;
+    if (seenStudents.has(studentId)) continue;
+    seenStudents.add(studentId);
+    children.push({ studentId, studentNo, studentName, studentClass, amountDue, parentName: currentParentName, parentNo: currentParentNo });
   }
-
-
   return children;
-
 }
-
 
 
 /************************************************************
@@ -2194,37 +1758,29 @@ function prepareSelectedPayment() {
       .getDisplayValue();
 
 
-  const parentNo =
-    inflowSheet
-      .getRange(
-        row,
-        CONFIG.INFLOW.PARENT_NO
-      )
-      .getDisplayValue();
+  const parentNo = inflowSheet.getRange(row, CONFIG.INFLOW.PARENT_NO).getDisplayValue();
+
+  const familyId = normalizeId(
+    inflowSheet.getRange(row, CONFIG.INFLOW.FAMILY_ID).getDisplayValue()
+  );
 
 
-  if (!parentNo) {
-
-    throw new Error(
-      'The selected payment has no Parent No.'
-    );
-
+  if (!familyId) {
+    throw new Error('The selected payment has no permanent Family ID.');
   }
 
 
   const children =
     getChildrenForParent(
-      parentNo
+      familyId
     );
 
 
   if (!children.length) {
 
     throw new Error(
-      'No children were found for Parent No: ' +
-      parentNo +
-      '.\n\n' +
-      'Check the Parent No and run Sync Student Numbers.'
+      'No children were found for Family ID: ' + familyId + '.\n\n' +
+      'Check the Family ID on Daily Inflow and Parent/Student Financial Record.'
     );
 
   }
@@ -2340,7 +1896,7 @@ function prepareSelectedPayment() {
     .getRange(
       3,
       2,
-      7,
+      8,
       6
     )
     .clearContent();
@@ -2353,14 +1909,14 @@ function prepareSelectedPayment() {
     );
 
 
-  if (lastRow >= 12) {
+  if (lastRow >= 13) {
 
     entrySheet
       .getRange(
-        12,
+        13,
         1,
-        lastRow - 11,
-        8
+        lastRow - 12,
+        9
       )
       .clearContent();
 
@@ -2382,24 +1938,11 @@ function prepareSelectedPayment() {
     .setValue(parentNo);
 
 
-  entrySheet
-    .getRange('B6')
-    .setValue(payee);
-
-
-  entrySheet
-    .getRange('B7')
-    .setValue(amountReceived);
-
-
-  entrySheet
-    .getRange('B8')
-    .setValue(existing.total);
-
-
-  entrySheet
-    .getRange('B9')
-    .setValue(remainingPayment);
+  entrySheet.getRange('B6').setValue(familyId);
+  entrySheet.getRange('B7').setValue(payee);
+  entrySheet.getRange('B8').setValue(amountReceived);
+  entrySheet.getRange('B9').setValue(existing.total);
+  entrySheet.getRange('B10').setValue(remainingPayment);
 
 
   /*
@@ -2435,7 +1978,9 @@ function prepareSelectedPayment() {
 
             '',
 
-            ''
+            '',
+
+            child.studentId
 
           ]);
 
@@ -2450,10 +1995,10 @@ function prepareSelectedPayment() {
 
     entrySheet
       .getRange(
-        12,
+        13,
         1,
         rows.length,
-        8
+        9
       )
       .setValues(rows);
 
@@ -2475,455 +2020,90 @@ function prepareSelectedPayment() {
  ************************************************************/
 
 function postAllocation() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const entrySheet = ss.getSheetByName(CONFIG.ALLOCATION_ENTRY_SHEET);
+  const logSheet = ss.getSheetByName(CONFIG.ALLOCATION_LOG_SHEET);
+  const inflowSheet = ss.getSheetByName(CONFIG.INFLOW_SHEET);
 
-  const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
+  const paymentId = entrySheet.getRange('B3').getDisplayValue().trim();
+  const paymentDate = entrySheet.getRange('B4').getValue();
+  const parentNo = entrySheet.getRange('B5').getDisplayValue();
+  const familyId = normalizeId(entrySheet.getRange('B6').getDisplayValue());
+  const payee = entrySheet.getRange('B7').getDisplayValue();
+  const remainingBefore = money(entrySheet.getRange('B10').getValue());
 
+  if (!paymentId) throw new Error('No payment is currently loaded in Allocation_Entry.');
+  if (!familyId) throw new Error('This payment has no permanent Family ID.');
+  if (remainingBefore <= CONFIG.TOLERANCE) throw new Error('This payment is already fully allocated.');
 
-  const entrySheet =
-    ss.getSheetByName(
-      CONFIG.ALLOCATION_ENTRY_SHEET
-    );
-
-
-  const logSheet =
-    ss.getSheetByName(
-      CONFIG.ALLOCATION_LOG_SHEET
-    );
-
-
-  const inflowSheet =
-    ss.getSheetByName(
-      CONFIG.INFLOW_SHEET
-    );
-
-
-  const paymentId =
-    entrySheet
-      .getRange('B3')
-      .getDisplayValue()
-      .trim();
-
-
-  const paymentDate =
-    entrySheet
-      .getRange('B4')
-      .getValue();
-
-
-  const parentNo =
-    entrySheet
-      .getRange('B5')
-      .getDisplayValue();
-
-
-  const payee =
-    entrySheet
-      .getRange('B6')
-      .getDisplayValue();
-
-
-  const remainingBefore =
-    money(
-      entrySheet
-        .getRange('B9')
-        .getValue()
-    );
-
-
-  if (!paymentId) {
-
-    throw new Error(
-      'No payment is currently loaded in Allocation_Entry.'
-    );
-
-  }
-
-
-  if (
-    remainingBefore <=
-    CONFIG.TOLERANCE
-  ) {
-
-    throw new Error(
-      'This payment is already fully allocated.'
-    );
-
-  }
-
-
-  const lastRow =
-    entrySheet.getLastRow();
-
-
-  if (lastRow < 12) {
-
-    throw new Error(
-      'There are no allocation rows.'
-    );
-
-  }
-
-
-  const data =
-    entrySheet
-      .getRange(
-        12,
-        1,
-        lastRow - 11,
-        8
-      )
-      .getValues();
-
-
+  const lastRow = entrySheet.getLastRow();
+  if (lastRow < 13) throw new Error('There are no allocation rows.');
+  const data = entrySheet.getRange(13, 1, lastRow - 12, 9).getValues();
   const allocations = [];
-
-
   const categoryTotals = {};
-
-
   let allocationTotal = 0;
 
+  data.forEach(row => {
+    const studentNo = row[0];
+    const studentName = row[1];
+    const studentClass = row[2];
+    const category = row[4];
+    const categoryAvailable = money(row[5]);
+    const amount = money(row[6]);
+    const remarks = row[7];
+    const studentId = normalizeId(row[8]);
+    if (amount <= 0) return;
+    if (!studentId) throw new Error('An allocation amount was entered for ' + studentName + ' but the student has no permanent Student ID.');
+    if (amount > categoryAvailable + CONFIG.TOLERANCE) throw new Error(studentName + ' has an allocation greater than the available amount for ' + category + '.');
 
-  data.forEach(
-    row => {
+    allocations.push({ studentId, studentNo, studentName, studentClass, category, amount, remarks });
+    allocationTotal += amount;
+    categoryTotals[category] = (categoryTotals[category] || 0) + amount;
+  });
 
-      const studentNo =
-          row[0];
-
-        const studentName =
-          row[1];
-
-        const studentClass =
-          row[2];
-
-        const amountDue =
-          money(row[3]);
-
-        const category =
-          row[4];
-
-        const categoryAvailable =
-          money(row[5]);
-
-        const amount =
-          money(row[6]);
-
-        const remarks =
-          row[7];
-
-
-      if (
-        amount <= 0
-      ) {
-        return;
-      }
-
-
-      if (!studentNo) {
-
-        throw new Error(
-          'An allocation amount was entered for ' +
-          studentName +
-          ' but the student has no Student Number.'
-        );
-
-      }
-
-
-      if (
-        amount >
-        categoryAvailable +
-        CONFIG.TOLERANCE
-      ) {
-
-        throw new Error(
-          studentName +
-          ' has an allocation greater than the ' +
-          'available amount for ' +
-          category +
-          '.'
-        );
-
-      }
-
-
-      allocations.push({
-
-        studentNo:
-          studentNo,
-
-        studentName:
-          studentName,
-
-        studentClass:
-          studentClass,
-
-        category:
-          category,
-
-        amount:
-          amount,
-
-        remarks:
-          remarks
-
-      });
-
-
-      allocationTotal +=
-        amount;
-
-
-      if (
-        !categoryTotals[category]
-      ) {
-
-        categoryTotals[category] = 0;
-
-      }
-
-
-      categoryTotals[category] +=
-        amount;
-
-    }
-  );
-
-
-  if (!allocations.length) {
-
-    throw new Error(
-      'Enter at least one allocation amount.'
-    );
-
+  if (!allocations.length) throw new Error('Enter at least one allocation amount.');
+  if (allocationTotal > remainingBefore + CONFIG.TOLERANCE) {
+    throw new Error('You are attempting to allocate ₦' + allocationTotal.toLocaleString() + ' but only ₦' + remainingBefore.toLocaleString() + ' remains on this payment.');
   }
-
-
-  if (
-    allocationTotal >
-    remainingBefore +
-    CONFIG.TOLERANCE
-  ) {
-
-    throw new Error(
-      'You are attempting to allocate ₦' +
-      allocationTotal.toLocaleString() +
-      ' but only ₦' +
-      remainingBefore.toLocaleString() +
-      ' remains on this payment.'
-    );
-
-  }
-
-
-  /*
-   * Ensure category total does not exceed
-   * actual category amount remaining.
-   */
 
   const availableByCategory = {};
+  data.forEach(row => {
+    const category = row[4];
+    const available = money(row[5]);
+    if (category && available > 0) availableByCategory[category] = available;
+  });
+  Object.keys(categoryTotals).forEach(category => {
+    if (categoryTotals[category] > availableByCategory[category] + CONFIG.TOLERANCE)
+      throw new Error('Total allocation for ' + category + ' exceeds the amount available.');
+  });
 
-
-  data.forEach(
-    row => {
-
-    const category =
-      row[4];
-
-    const available =
-      money(row[5]);
-
-
-      if (
-        !category ||
-        available <= 0
-      ) {
-        return;
-      }
-
-
-      availableByCategory[category] =
-        available;
-
-    }
-  );
-
-
-  Object.keys(
-    categoryTotals
-  ).forEach(
-    category => {
-
-      if (
-        categoryTotals[category] >
-        availableByCategory[category] +
-        CONFIG.TOLERANCE
-      ) {
-
-        throw new Error(
-          'Total allocation for ' +
-          category +
-          ' exceeds the amount available.'
-        );
-
-      }
-
-    }
-  );
-
-
-  /*
-   * Get receipt number from inflow.
-   */
-
-  const paymentIdCol =
-    findHeaderColumn(
-      inflowSheet,
-      'Payment ID'
-    );
-
-
-  const receiptCol =
-    findHeaderColumn(
-      inflowSheet,
-      'Receipt No'
-    );
-
-
+  const paymentIdCol = findHeaderColumn(inflowSheet, 'Payment ID');
+  const receiptCol = findHeaderColumn(inflowSheet, 'Receipt No');
   let receiptNo = '';
-
-
-  const inflowData =
-    inflowSheet
-      .getDataRange()
-      .getValues();
-
-
-  for (
-    let i = 1;
-    i < inflowData.length;
-    i++
-  ) {
-
-    if (
-      normalize(
-        inflowData[i]
-          [paymentIdCol - 1]
-      ) ===
-      normalize(paymentId)
-    ) {
-
-      receiptNo =
-        inflowData[i]
-          [receiptCol - 1];
-
+  const inflowData = inflowSheet.getDataRange().getValues();
+  for (let i = 1; i < inflowData.length; i++) {
+    if (normalize(inflowData[i][paymentIdCol - 1]) === normalize(paymentId)) {
+      receiptNo = inflowData[i][receiptCol - 1];
       break;
-
     }
-
   }
 
-
-  const enteredBy =
-    Session
-      .getActiveUser()
-      .getEmail() || 'Unknown User';
-
-
-  const logRows =
-    allocations.map(
-      allocation => [
-
-        'AL-' +
-        Utilities
-          .getUuid()
-          .substring(0, 10)
-          .toUpperCase(),
-
-        paymentId,
-
-        paymentDate,
-
-        parentNo,
-
-        payee,
-
-        allocation.studentNo,
-
-        allocation.studentName,
-
-        allocation.studentClass,
-
-        allocation.category,
-
-        allocation.amount,
-
-        receiptNo,
-
-        allocation.remarks,
-
-        enteredBy,
-
-        new Date()
-
-      ]
-    );
-
-
-  logSheet
-    .getRange(
-      logSheet.getLastRow() + 1,
-      1,
-      logRows.length,
-      logRows[0].length
-    )
-    .setValues(logRows);
-
-
-  /*
-   * Update balances everywhere.
-   */
+  const enteredBy = Session.getActiveUser().getEmail() || 'Unknown User';
+  const logRows = allocations.map(a => [
+    'AL-' + Utilities.getUuid().substring(0, 10).toUpperCase(),
+    paymentId, paymentDate, parentNo, payee, a.studentNo, a.studentName, a.studentClass,
+    a.category, a.amount, receiptNo, a.remarks, enteredBy, new Date(), familyId, a.studentId
+  ]);
+  logSheet.getRange(logSheet.getLastRow() + 1, 1, logRows.length, 16).setValues(logRows);
 
   refreshAllBalances();
-
-
-  /*
-   * Refresh this same payment so that
-   * only the remaining amount appears.
-   */
-
-  const paymentRow =
-    findPaymentRow(
-      paymentId
-    );
-
-
+  const paymentRow = findPaymentRow(paymentId);
   if (paymentRow) {
-
-    inflowSheet
-      .getRange(
-        paymentRow,
-        1
-      )
-      .activate();
-
-
+    inflowSheet.getRange(paymentRow, 1).activate();
     prepareSelectedPayment();
-
   }
-
-
-  SpreadsheetApp
-    .getUi()
-    .alert(
-      'Allocation posted successfully.\n\n' +
-      'Allocated now: ₦' +
-      allocationTotal.toLocaleString()
-    );
-
+  SpreadsheetApp.getUi().alert('Allocation posted successfully.\n\nAllocated now: ₦' + allocationTotal.toLocaleString());
 }
-
 
 
 /************************************************************
@@ -3004,6 +2184,8 @@ function refreshAllBalances() {
 
   createAllocationLog();
 
+  migrateLegacyHistoryToPermanentIds();
+
   updateInflowAllocationStatus();
 
   updateStudentMasterPayments();
@@ -3015,7 +2197,6 @@ function refreshAllBalances() {
 /************************************************************
  * UPDATE MASTER DAILY INFLOW STATUS
  ************************************************************/
-
 function updateInflowAllocationStatus() {
 
   const ss =
@@ -3063,6 +2244,38 @@ function updateInflowAllocationStatus() {
 
 
   /*
+   * Find Payment_Allocation columns by header.
+   * This avoids problems when Family ID,
+   * Student ID or other columns are inserted.
+   */
+
+  const logPaymentIdCol =
+    findHeaderColumn(
+      logSheet,
+      'Payment ID'
+    );
+
+
+  const logAmountCol =
+    findHeaderColumn(
+      logSheet,
+      'Amount'
+    );
+
+
+  if (
+    !logPaymentIdCol ||
+    !logAmountCol
+  ) {
+
+    throw new Error(
+      'Payment_Allocation must contain Payment ID and Amount columns.'
+    );
+
+  }
+
+
+  /*
    * Payment ID -> Allocated Total
    */
 
@@ -3087,13 +2300,15 @@ function updateInflowAllocationStatus() {
 
       const paymentId =
         normalize(
-          allocationData[i][1]
+          allocationData[i]
+            [logPaymentIdCol - 1]
         );
 
 
       const amount =
         money(
-          allocationData[i][9]
+          allocationData[i]
+            [logAmountCol - 1]
         );
 
 
@@ -3231,202 +2446,46 @@ function updateInflowAllocationStatus() {
  ************************************************************/
 
 function updateStudentMasterPayments() {
-
-  const financeSS =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-
-  let baselineSheet =
-    financeSS.getSheetByName(
-      CONFIG.BASELINE_SHEET
-    );
-
-
-  if (
-    !baselineSheet ||
-    baselineSheet.getLastRow() < 2
-  ) {
-
+  const financeSS = SpreadsheetApp.getActiveSpreadsheet();
+  let baselineSheet = financeSS.getSheetByName(CONFIG.BASELINE_SHEET);
+  if (!baselineSheet || baselineSheet.getLastRow() < 2) {
     createPaymentBaseline();
-
-    baselineSheet =
-      financeSS.getSheetByName(
-        CONFIG.BASELINE_SHEET
-      );
-
+    baselineSheet = financeSS.getSheetByName(CONFIG.BASELINE_SHEET);
   }
 
-
-  const allocationSheet =
-    financeSS.getSheetByName(
-      CONFIG.ALLOCATION_LOG_SHEET
-    );
-
-
-  const baselineData =
-    baselineSheet
-      .getDataRange()
-      .getValues();
-
-
+  const allocationSheet = financeSS.getSheetByName(CONFIG.ALLOCATION_LOG_SHEET);
+  const baselineData = baselineSheet.getDataRange().getValues();
   const openingPaid = {};
-
-
-  for (
-    let i = 1;
-    i < baselineData.length;
-    i++
-  ) {
-
-    const studentNo =
-      normalizeId(
-        baselineData[i][0]
-      );
-
-
-    if (!studentNo) {
-      continue;
-    }
-
-
-    openingPaid[studentNo] =
-      money(
-        baselineData[i][2]
-      );
-
+  const baselineStudentIdCol = findHeaderColumn(baselineSheet, 'Student ID');
+  const baselineOpeningCol = findHeaderColumn(baselineSheet, 'Opening Amount Paid');
+  if (!baselineStudentIdCol || !baselineOpeningCol) {
+    throw new Error('The payment baseline has not yet been migrated to permanent Student IDs. Run Initial Setup once.');
   }
-
+  for (let i = 1; i < baselineData.length; i++) {
+    const studentId = normalizeId(baselineData[i][baselineStudentIdCol - 1]);
+    if (studentId) openingPaid[studentId] = money(baselineData[i][baselineOpeningCol - 1]);
+  }
 
   const newPayments = {};
-
-
-  if (
-    allocationSheet.getLastRow() >= 2
-  ) {
-
-    const allocationData =
-      allocationSheet
-        .getDataRange()
-        .getValues();
-
-
-    for (
-      let i = 1;
-      i < allocationData.length;
-      i++
-    ) {
-
-      const studentNo =
-        normalizeId(
-          allocationData[i][5]
-        );
-
-
-      const amount =
-        money(
-          allocationData[i][9]
-        );
-
-
-      if (!studentNo) {
-        continue;
-      }
-
-
-      newPayments[studentNo] =
-        (
-          newPayments[studentNo] ||
-          0
-        ) + amount;
-
+  if (allocationSheet.getLastRow() >= 2) {
+    const allocationData = allocationSheet.getDataRange().getValues();
+    const logStudentIdCol = findHeaderColumn(allocationSheet, 'Student ID');
+    const logAmountCol = findHeaderColumn(allocationSheet, 'Amount');
+    for (let i = 1; i < allocationData.length; i++) {
+      const studentId = normalizeId(allocationData[i][logStudentIdCol - 1]);
+      if (!studentId) continue;
+      newPayments[studentId] = (newPayments[studentId] || 0) + money(allocationData[i][logAmountCol - 1]);
     }
-
   }
 
-
-  const studentSS =
-    getStudentWorkbook();
-
-
-  const studentSheet =
-    studentSS.getSheetByName(
-      CONFIG.STUDENT_MASTER_SHEET
-    );
-
-
-  const studentData =
-    studentSheet
-      .getDataRange()
-      .getValues();
-
-
-  for (
-    let i = 1;
-    i < studentData.length;
-    i++
-  ) {
-
-    const row =
-      i + 1;
-
-
-    const studentNo =
-      normalizeId(
-        studentData[i]
-          [CONFIG.STUDENT.STUDENT_NO - 1]
-      );
-
-
-    if (!studentNo) {
-      continue;
-    }
-
-
-    /*
-     * New students not present when
-     * baseline was captured begin at zero.
-     */
-
-    const opening =
-      openingPaid[studentNo] || 0;
-
-
-    const allocated =
-      newPayments[studentNo] || 0;
-
-
-    const amountPaid =
-      opening +
-      allocated;
-
-
-    studentSheet
-      .getRange(
-        row,
-        CONFIG.STUDENT.AMOUNT_PAID
-      )
-      .setValue(
-        amountPaid
-      );
-
-
-    /*
-     * Keep your Amount Owing formula.
-     */
-
-    studentSheet
-      .getRange(
-        row,
-        CONFIG.STUDENT.AMOUNT_OWING
-      )
-      .setFormula(
-        '=IFERROR(N' +
-        row +
-        '-O' +
-        row +
-        ',"")'
-      );
-
+  const studentSheet = getStudentWorkbook().getSheetByName(CONFIG.STUDENT_MASTER_SHEET);
+  const studentData = studentSheet.getDataRange().getValues();
+  for (let i = 1; i < studentData.length; i++) {
+    const row = i + 1;
+    const studentId = normalizeId(studentData[i][CONFIG.STUDENT.STUDENT_ID - 1]);
+    if (!studentId) continue;
+    const amountPaid = (openingPaid[studentId] || 0) + (newPayments[studentId] || 0);
+    studentSheet.getRange(row, CONFIG.STUDENT.AMOUNT_PAID).setValue(amountPaid);
+    studentSheet.getRange(row, CONFIG.STUDENT.AMOUNT_OWING).setFormula('=IFERROR(Q' + row + '-R' + row + ',"")');
   }
-
 }
