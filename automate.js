@@ -55,6 +55,8 @@ const CONFIG = {
 
   SYNC_ISSUES_SHEET: 'Sync_Issues',
 
+  FAMILY_HISTORY_SHEET: 'Family_Payment_History',
+
 
   // -------------------------
   // PARENT/STUDENT COLUMNS
@@ -247,7 +249,15 @@ function onOpen() {
     )
     .addSeparator()
     .addItem(
-      '6. Refresh Payment Balances',
+      '6. Reverse Selected Allocation',
+      'reverseSelectedAllocation'
+      )
+    .addItem(
+      '7. Family Payment History',
+      'showFamilyPaymentHistory'
+      )
+    .addItem(
+      '8. Refresh Payment Balances',
       'refreshAllBalances'
     )
     .addToUi();
@@ -784,7 +794,306 @@ function ensurePaymentId(
 
 }
 
+function formatAllocationEntrySheet() {
 
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+  const sheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_ENTRY_SHEET
+    );
+
+  if (!sheet) {
+    return;
+  }
+
+
+  const headerRow = 11;
+
+  const lastColumn =
+    sheet.getLastColumn();
+
+  const lastRow =
+    sheet.getLastRow();
+
+
+  if (
+    lastRow < headerRow
+  ) {
+    return;
+  }
+
+
+  const headers =
+    sheet
+      .getRange(
+        headerRow,
+        1,
+        1,
+        lastColumn
+      )
+      .getDisplayValues()[0];
+
+
+  function getEntryColumn(
+    header
+  ) {
+
+    const index =
+      headers.indexOf(header);
+
+    return index === -1
+      ? 0
+      : index + 1;
+
+  }
+
+
+  const amountDueCol =
+    getEntryColumn(
+      'Amount Due'
+    );
+
+
+  const categoryAvailableCol =
+    getEntryColumn(
+      'Category Available'
+    );
+
+
+  const amountToAllocateCol =
+    getEntryColumn(
+      'Amount To Allocate'
+    );
+
+
+  const remarksCol =
+    getEntryColumn(
+      'Remarks'
+    );
+
+
+  const dataStartRow = 12;
+
+  const dataRows =
+    Math.max(
+      lastRow - dataStartRow + 1,
+      1
+    );
+
+
+  /************************************************************
+   * CURRENCY FORMATTING
+   ************************************************************/
+
+  const currencyFormat =
+    '₦#,##0.00';
+
+
+  if (amountDueCol) {
+
+    sheet
+      .getRange(
+        dataStartRow,
+        amountDueCol,
+        dataRows,
+        1
+      )
+      .setNumberFormat(
+        currencyFormat
+      );
+
+  }
+
+
+  if (categoryAvailableCol) {
+
+    sheet
+      .getRange(
+        dataStartRow,
+        categoryAvailableCol,
+        dataRows,
+        1
+      )
+      .setNumberFormat(
+        currencyFormat
+      );
+
+  }
+
+
+  if (amountToAllocateCol) {
+
+    sheet
+      .getRange(
+        dataStartRow,
+        amountToAllocateCol,
+        dataRows,
+        1
+      )
+      .setNumberFormat(
+        currencyFormat
+      );
+
+  }
+
+
+  /************************************************************
+   * VISUALLY DISTINGUISH EDITABLE CELLS
+   ************************************************************/
+
+  if (amountToAllocateCol) {
+
+    sheet
+      .getRange(
+        dataStartRow,
+        amountToAllocateCol,
+        dataRows,
+        1
+      )
+      .setBackground(
+        '#fff2cc'
+      );
+
+  }
+
+
+  if (remarksCol) {
+
+    sheet
+      .getRange(
+        dataStartRow,
+        remarksCol,
+        dataRows,
+        1
+      )
+      .setBackground(
+        '#fff2cc'
+      );
+
+  }
+
+
+  /************************************************************
+   * HEADER FORMATTING
+   ************************************************************/
+
+  sheet
+    .getRange(
+      headerRow,
+      1,
+      1,
+      lastColumn
+    )
+    .setFontWeight(
+      'bold'
+    );
+
+
+  sheet
+    .setFrozenRows(
+      headerRow
+    );
+
+}
+
+function getAllocatedTotalForPayment(
+  paymentId
+) {
+
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+
+  const logSheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+
+  if (
+    !logSheet ||
+    logSheet.getLastRow() < 2
+  ) {
+
+    return 0;
+
+  }
+
+
+  const paymentIdCol =
+    findHeaderColumn(
+      logSheet,
+      'Payment ID'
+    );
+
+
+  const amountCol =
+    findHeaderColumn(
+      logSheet,
+      'Amount'
+    );
+
+
+  if (
+    !paymentIdCol ||
+    !amountCol
+  ) {
+
+    throw new Error(
+      'Payment_Allocation must contain Payment ID and Amount columns.'
+    );
+
+  }
+
+
+  const data =
+    logSheet
+      .getDataRange()
+      .getValues();
+
+
+  let total = 0;
+
+
+  const targetPaymentId =
+    normalize(
+      paymentId
+    );
+
+
+  for (
+    let i = 1;
+    i < data.length;
+    i++
+  ) {
+
+    const rowPaymentId =
+      normalize(
+        data[i][paymentIdCol - 1]
+      );
+
+
+    if (
+      rowPaymentId !==
+      targetPaymentId
+    ) {
+      continue;
+    }
+
+
+    total +=
+      money(
+        data[i][amountCol - 1]
+      );
+
+  }
+
+
+  return total;
+
+}
 
 /************************************************************
  * SYNC STUDENT NUMBERS
@@ -1739,6 +2048,51 @@ function prepareSelectedPayment() {
       row
     );
 
+  
+  const alreadyAllocated =
+  getAllocatedTotalForPayment(
+    paymentId
+  );
+
+
+const remainingToAllocate =
+  amountReceived -
+  alreadyAllocated;
+
+
+if (
+  remainingToAllocate <=
+  CONFIG.TOLERANCE
+) {
+
+  updateInflowAllocationStatus();
+
+
+  SpreadsheetApp
+    .getUi()
+    .alert(
+      'Payment Already Fully Allocated\n\n' +
+
+      'Payment ID: ' +
+      paymentId +
+      '\n' +
+
+      'Amount Received: ₦' +
+      amountReceived.toLocaleString() +
+      '\n' +
+
+      'Allocated: ₦' +
+      alreadyAllocated.toLocaleString() +
+      '\n\n' +
+
+      'No further allocation is required.'
+    );
+
+
+  return;
+
+}
+
 
   const date =
     inflowSheet
@@ -2004,6 +2358,9 @@ function prepareSelectedPayment() {
 
   }
 
+  formatAllocationEntrySheet();
+
+
   entrySheet.activate();
 
 
@@ -2105,6 +2462,1361 @@ function postAllocation() {
   SpreadsheetApp.getUi().alert('Allocation posted successfully.\n\nAllocated now: ₦' + allocationTotal.toLocaleString());
 }
 
+
+function reverseSelectedAllocation() {
+
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+
+  const logSheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+
+  if (!logSheet) {
+
+    throw new Error(
+      'Payment_Allocation sheet was not found.'
+    );
+
+  }
+
+
+  const activeSheet =
+    ss.getActiveSheet();
+
+
+  if (
+    activeSheet.getName() !==
+    CONFIG.ALLOCATION_LOG_SHEET
+  ) {
+
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        'Please open Payment_Allocation and select the allocation you want to reverse.'
+      );
+
+    return;
+
+  }
+
+
+  const selectedRow =
+    activeSheet
+      .getActiveRange()
+      .getRow();
+
+
+  if (
+    selectedRow <= 1
+  ) {
+
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        'Please select an allocation row, not the header.'
+      );
+
+    return;
+
+  }
+
+
+  /************************************************************
+   * FIND COLUMNS BY HEADER
+   ************************************************************/
+
+  const allocationIdCol =
+    findHeaderColumn(
+      logSheet,
+      'Allocation ID'
+    );
+
+
+  const paymentIdCol =
+    findHeaderColumn(
+      logSheet,
+      'Payment ID'
+    );
+
+
+  const amountCol =
+    findHeaderColumn(
+      logSheet,
+      'Amount'
+    );
+
+
+  const remarksCol =
+    findHeaderColumn(
+      logSheet,
+      'Remarks'
+    );
+
+
+  const loggedAtCol =
+    findHeaderColumn(
+      logSheet,
+      'Logged At'
+    );
+
+
+  const enteredByCol =
+    findHeaderColumn(
+      logSheet,
+      'Entered By'
+    );
+
+
+  if (
+    !allocationIdCol ||
+    !paymentIdCol ||
+    !amountCol
+  ) {
+
+    throw new Error(
+      'Payment_Allocation is missing Allocation ID, Payment ID or Amount.'
+    );
+
+  }
+
+
+  const lastColumn =
+    logSheet.getLastColumn();
+
+
+  const sourceRow =
+    logSheet
+      .getRange(
+        selectedRow,
+        1,
+        1,
+        lastColumn
+      )
+      .getValues()[0];
+
+
+  const allocationId =
+    normalizeId(
+      sourceRow[
+        allocationIdCol - 1
+      ]
+    );
+
+
+  const paymentId =
+    normalizeId(
+      sourceRow[
+        paymentIdCol - 1
+      ]
+    );
+
+
+  const originalAmount =
+    money(
+      sourceRow[
+        amountCol - 1
+      ]
+    );
+
+
+  const originalRemarks =
+    remarksCol
+      ? String(
+          sourceRow[
+            remarksCol - 1
+          ] || ''
+        )
+      : '';
+
+
+  /************************************************************
+   * VALIDATE SOURCE ALLOCATION
+   ************************************************************/
+
+  if (!allocationId) {
+
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        'The selected row does not have a valid Allocation ID.'
+      );
+
+    return;
+
+  }
+
+
+  if (
+    originalAmount <= 0
+  ) {
+
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        'This row cannot be reversed because it is already a reversal or has no positive allocation amount.'
+      );
+
+    return;
+
+  }
+
+
+  /************************************************************
+   * PREVENT DOUBLE REVERSAL
+   ************************************************************/
+
+  const data =
+    logSheet
+      .getDataRange()
+      .getDisplayValues();
+
+
+  const reversalMarker =
+    'REVERSAL OF ' +
+    allocationId;
+
+
+  for (
+    let i = 1;
+    i < data.length;
+    i++
+  ) {
+
+    if (!remarksCol) {
+      break;
+    }
+
+
+    const remarks =
+      String(
+        data[i][remarksCol - 1] || ''
+      );
+
+
+    if (
+      remarks.indexOf(
+        reversalMarker
+      ) !== -1
+    ) {
+
+      SpreadsheetApp
+        .getUi()
+        .alert(
+          'This allocation has already been reversed.'
+        );
+
+      return;
+
+    }
+
+  }
+
+
+  /************************************************************
+   * ASK FOR CONFIRMATION
+   ************************************************************/
+
+  const ui =
+    SpreadsheetApp.getUi();
+
+
+  const response =
+    ui.alert(
+      'Reverse Allocation',
+      'You are about to reverse:\n\n' +
+
+      'Allocation ID: ' +
+      allocationId +
+      '\n' +
+
+      'Payment ID: ' +
+      paymentId +
+      '\n' +
+
+      'Amount: ₦' +
+      originalAmount.toLocaleString() +
+      '\n\n' +
+
+      'The original allocation will remain in the audit trail.\n\n' +
+
+      'Continue?',
+      ui.ButtonSet.YES_NO
+    );
+
+
+  if (
+    response !==
+    ui.Button.YES
+  ) {
+
+    return;
+
+  }
+
+
+  /************************************************************
+   * CREATE REVERSAL ROW
+   ************************************************************/
+
+  const reversalRow =
+    sourceRow.slice();
+
+
+  const timestamp =
+    new Date();
+
+
+  const reversalId =
+    'REV-' +
+    allocationId +
+    '-' +
+    Utilities.formatDate(
+      timestamp,
+      ss.getSpreadsheetTimeZone(),
+      'yyyyMMddHHmmss'
+    );
+
+
+  reversalRow[
+    allocationIdCol - 1
+  ] =
+    reversalId;
+
+
+  reversalRow[
+    amountCol - 1
+  ] =
+    -Math.abs(
+      originalAmount
+    );
+
+
+  if (remarksCol) {
+
+    reversalRow[
+      remarksCol - 1
+    ] =
+      reversalMarker +
+      (
+        originalRemarks
+          ? ' | Original remark: ' +
+            originalRemarks
+          : ''
+      );
+
+  }
+
+
+  if (loggedAtCol) {
+
+    reversalRow[
+      loggedAtCol - 1
+    ] =
+      timestamp;
+
+  }
+
+
+  if (enteredByCol) {
+
+    reversalRow[
+      enteredByCol - 1
+    ] =
+      Session
+        .getActiveUser()
+        .getEmail();
+
+  }
+
+
+  /************************************************************
+   * APPEND REVERSAL
+   ************************************************************/
+
+  logSheet
+    .appendRow(
+      reversalRow
+    );
+
+
+  /************************************************************
+   * REFRESH ALL BALANCES
+   ************************************************************/
+
+  updateInflowAllocationStatus();
+
+  updateStudentMasterPayments();
+
+
+  ui.alert(
+    'Allocation Reversed Successfully\n\n' +
+
+    'Original Allocation: ' +
+    allocationId +
+    '\n' +
+
+    'Reversed Amount: ₦' +
+    originalAmount.toLocaleString() +
+    '\n\n' +
+
+    'The original transaction has been preserved in Payment_Allocation.'
+  );
+
+}
+
+/************************************************************
+ * FAMILY PAYMENT HISTORY
+ ************************************************************/
+
+function showFamilyPaymentHistory() {
+
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+
+  const ui =
+    SpreadsheetApp.getUi();
+
+
+  /************************************************************
+   * ASK FOR FAMILY ID
+   ************************************************************/
+
+  const response =
+    ui.prompt(
+      'Family Payment History',
+      'Enter the Family ID:',
+      ui.ButtonSet.OK_CANCEL
+    );
+
+
+  if (
+    response.getSelectedButton() !==
+    ui.Button.OK
+  ) {
+    return;
+  }
+
+
+  const familyId =
+    normalizeId(
+      response.getResponseText()
+    );
+
+
+  if (!familyId) {
+
+    ui.alert(
+      'Please enter a valid Family ID.'
+    );
+
+    return;
+
+  }
+
+
+  /************************************************************
+   * GET SHEETS
+   ************************************************************/
+
+  const parentSheet =
+    ss.getSheetByName(
+      CONFIG.PARENT_STUDENT_SHEET
+    );
+
+
+  const inflowSheet =
+    ss.getSheetByName(
+      CONFIG.INFLOW_SHEET
+    );
+
+
+  const allocationSheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+
+  if (!parentSheet) {
+
+    throw new Error(
+      'Parent/Student Financial Record sheet was not found.'
+    );
+
+  }
+
+
+  if (!inflowSheet) {
+
+    throw new Error(
+      'Daily Inflow sheet was not found.'
+    );
+
+  }
+
+
+  if (!allocationSheet) {
+
+    throw new Error(
+      'Payment_Allocation sheet was not found.'
+    );
+
+  }
+
+
+  /************************************************************
+   * FIND / CREATE HISTORY SHEET
+   ************************************************************/
+
+  let historySheet =
+    ss.getSheetByName(
+      CONFIG.FAMILY_HISTORY_SHEET
+    );
+
+
+  if (!historySheet) {
+
+    historySheet =
+      ss.insertSheet(
+        CONFIG.FAMILY_HISTORY_SHEET
+      );
+
+  }
+
+
+  historySheet.clear();
+
+
+  /************************************************************
+   * FIND PARENT MASTER FAMILY ID
+   ************************************************************/
+
+  const parentFamilyIdCol =
+    findHeaderColumnInRows(
+      parentSheet,
+      'Family ID',
+      1,
+      3
+    );
+
+
+  if (!parentFamilyIdCol) {
+
+    throw new Error(
+      'Family ID column was not found on the Parent/Student Financial Record.'
+    );
+
+  }
+
+
+  const parentData =
+    parentSheet
+      .getDataRange()
+      .getValues();
+
+
+  /************************************************************
+   * GET FAMILY INFORMATION
+   ************************************************************/
+
+  let parentName = '';
+
+  const children = [];
+
+
+  let currentFamilyId = '';
+
+  let currentParentName = '';
+
+
+  for (
+    let i = 3;
+    i < parentData.length;
+    i++
+  ) {
+
+    const rowFamilyId =
+      normalizeId(
+        parentData[i]
+          [parentFamilyIdCol - 1]
+      );
+
+
+    if (rowFamilyId) {
+
+      currentFamilyId =
+        rowFamilyId;
+
+    }
+
+
+    const rowParentName =
+      parentData[i]
+        [CONFIG.PARENT.PARENT_NAME - 1];
+
+
+    if (
+      normalize(rowParentName)
+    ) {
+
+      currentParentName =
+        rowParentName;
+
+    }
+
+
+    if (
+      currentFamilyId !==
+      familyId
+    ) {
+      continue;
+    }
+
+
+    if (!parentName) {
+
+      parentName =
+        currentParentName;
+
+    }
+
+
+    const studentName =
+      parentData[i]
+        [CONFIG.PARENT.STUDENT_NAME - 1];
+
+
+    if (
+      !normalize(studentName)
+    ) {
+      continue;
+    }
+
+
+    children.push([
+
+      normalizeId(
+        parentData[i]
+          [CONFIG.PARENT.STUDENT_ID - 1]
+      ),
+
+      normalizeId(
+        parentData[i]
+          [CONFIG.PARENT.STUDENT_NO - 1]
+      ),
+
+      studentName,
+
+      parentData[i]
+        [CONFIG.PARENT.STUDENT_CLASS - 1]
+
+    ]);
+
+  }
+
+
+  if (
+    !parentName &&
+    children.length === 0
+  ) {
+
+    ui.alert(
+      'No family was found with Family ID: ' +
+      familyId
+    );
+
+    return;
+
+  }
+
+
+  /************************************************************
+   * READ DAILY INFLOW
+   ************************************************************/
+
+  ensureInflowAutomationColumns();
+
+const inflowFamilyIdCol =
+  CONFIG.INFLOW.FAMILY_ID;
+
+
+  const inflowPaymentIdCol =
+    findHeaderColumn(
+      inflowSheet,
+      'Payment ID'
+    );
+
+
+  const allocatedAmountCol =
+    findHeaderColumn(
+      inflowSheet,
+      'Allocated Amount'
+    );
+
+
+  const unallocatedAmountCol =
+    findHeaderColumn(
+      inflowSheet,
+      'Unallocated Amount'
+    );
+
+
+  const allocationStatusCol =
+    findHeaderColumn(
+      inflowSheet,
+      'Allocation Status'
+    );
+
+
+
+
+  
+
+
+  const inflowData =
+    inflowSheet
+      .getDataRange()
+      .getValues();
+
+
+  const payments = [];
+
+
+  let totalReceived = 0;
+
+  let totalAllocated = 0;
+
+  let totalUnallocated = 0;
+
+
+  for (
+    let i = 1;
+    i < inflowData.length;
+    i++
+  ) {
+
+    const rowFamilyId =
+      normalizeId(
+        inflowData[i]
+          [inflowFamilyIdCol - 1]
+      );
+
+
+    if (
+      rowFamilyId !==
+      familyId
+    ) {
+      continue;
+    }
+
+
+    const amountReceived =
+      money(
+        inflowData[i]
+          [CONFIG.INFLOW.AMOUNT_RECEIVED - 1]
+      );
+
+
+    const allocated =
+      allocatedAmountCol
+        ? money(
+            inflowData[i]
+              [allocatedAmountCol - 1]
+          )
+        : 0;
+
+
+    const unallocated =
+      unallocatedAmountCol
+        ? money(
+            inflowData[i]
+              [unallocatedAmountCol - 1]
+          )
+        : amountReceived - allocated;
+
+
+    const status =
+      allocationStatusCol
+        ? inflowData[i]
+            [allocationStatusCol - 1]
+        : '';
+
+
+    payments.push([
+
+      inflowData[i]
+        [CONFIG.INFLOW.DATE - 1],
+
+      inflowPaymentIdCol
+        ? inflowData[i]
+            [inflowPaymentIdCol - 1]
+        : '',
+
+      inflowData[i]
+        [CONFIG.INFLOW.PAYEE - 1],
+
+      amountReceived,
+
+      allocated,
+
+      unallocated,
+
+      status
+
+    ]);
+
+
+    totalReceived +=
+      amountReceived;
+
+
+    totalAllocated +=
+      allocated;
+
+
+    totalUnallocated +=
+      unallocated;
+
+  }
+
+
+  /************************************************************
+   * READ PAYMENT ALLOCATION
+   ************************************************************/
+
+  const allocationFamilyIdCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Family ID'
+    );
+
+
+  const allocationPaymentIdCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Payment ID'
+    );
+
+
+  const allocationDateCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Payment Date'
+    );
+
+
+  const allocationStudentIdCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Student ID'
+    );
+
+
+  const allocationStudentNoCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Student No'
+    );
+
+
+  const allocationStudentNameCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Student Name'
+    );
+
+
+  const allocationClassCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Class'
+    );
+
+
+  const allocationCategoryCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Category'
+    );
+
+
+  const allocationAmountCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Amount'
+    );
+
+
+  const allocationRemarksCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Remarks'
+    );
+
+
+  if (
+    !allocationFamilyIdCol ||
+    !allocationAmountCol
+  ) {
+
+    throw new Error(
+      'Payment_Allocation must contain Family ID and Amount columns.'
+    );
+
+  }
+
+
+  const allocationData =
+    allocationSheet
+      .getDataRange()
+      .getValues();
+
+
+  const allocationHistory = [];
+
+
+  for (
+    let i = 1;
+    i < allocationData.length;
+    i++
+  ) {
+
+    const rowFamilyId =
+      normalizeId(
+        allocationData[i]
+          [allocationFamilyIdCol - 1]
+      );
+
+
+    if (
+      rowFamilyId !==
+      familyId
+    ) {
+      continue;
+    }
+
+
+    allocationHistory.push([
+
+      allocationDateCol
+        ? allocationData[i]
+            [allocationDateCol - 1]
+        : '',
+
+      allocationPaymentIdCol
+        ? allocationData[i]
+            [allocationPaymentIdCol - 1]
+        : '',
+
+      allocationStudentIdCol
+        ? allocationData[i]
+            [allocationStudentIdCol - 1]
+        : '',
+
+      allocationStudentNoCol
+        ? allocationData[i]
+            [allocationStudentNoCol - 1]
+        : '',
+
+      allocationStudentNameCol
+        ? allocationData[i]
+            [allocationStudentNameCol - 1]
+        : '',
+
+      allocationClassCol
+        ? allocationData[i]
+            [allocationClassCol - 1]
+        : '',
+
+      allocationCategoryCol
+        ? allocationData[i]
+            [allocationCategoryCol - 1]
+        : '',
+
+      money(
+        allocationData[i]
+          [allocationAmountCol - 1]
+      ),
+
+      allocationRemarksCol
+        ? allocationData[i]
+            [allocationRemarksCol - 1]
+        : ''
+
+    ]);
+
+  }
+
+
+  /************************************************************
+   * BUILD REPORT
+   ************************************************************/
+
+  historySheet
+    .getRange(
+      'A1'
+    )
+    .setValue(
+      'FAMILY PAYMENT HISTORY'
+    )
+    .setFontWeight(
+      'bold'
+    )
+    .setFontSize(
+      16
+    );
+
+
+  historySheet
+    .getRange(
+      'A3'
+    )
+    .setValue(
+      'Family ID'
+    );
+
+
+  historySheet
+    .getRange(
+      'B3'
+    )
+    .setValue(
+      familyId
+    );
+
+
+  historySheet
+    .getRange(
+      'A4'
+    )
+    .setValue(
+      'Parent / Guardian'
+    );
+
+
+  historySheet
+    .getRange(
+      'B4'
+    )
+    .setValue(
+      parentName
+    );
+
+
+  /************************************************************
+   * SUMMARY
+   ************************************************************/
+
+  historySheet
+    .getRange(
+      'A6:B9'
+    )
+    .setValues([
+
+      [
+        'Summary',
+        'Amount'
+      ],
+
+      [
+        'Total Received',
+        totalReceived
+      ],
+
+      [
+        'Total Allocated',
+        totalAllocated
+      ],
+
+      [
+        'Total Unallocated',
+        totalUnallocated
+      ]
+
+    ]);
+
+
+  historySheet
+    .getRange(
+      'A6:B6'
+    )
+    .setFontWeight(
+      'bold'
+    );
+
+
+  historySheet
+    .getRange(
+      'B7:B9'
+    )
+    .setNumberFormat(
+      '₦#,##0.00'
+    );
+
+
+  /************************************************************
+   * CHILDREN
+   ************************************************************/
+
+  let nextRow = 11;
+
+
+  historySheet
+    .getRange(
+      nextRow,
+      1
+    )
+    .setValue(
+      'CHILDREN'
+    )
+    .setFontWeight(
+      'bold'
+    );
+
+
+  nextRow++;
+
+
+  historySheet
+    .getRange(
+      nextRow,
+      1,
+      1,
+      4
+    )
+    .setValues([
+      [
+        'Student ID',
+        'Student No',
+        'Student Name',
+        'Class'
+      ]
+    ])
+    .setFontWeight(
+      'bold'
+    );
+
+
+  nextRow++;
+
+
+  if (
+    children.length > 0
+  ) {
+
+    historySheet
+      .getRange(
+        nextRow,
+        1,
+        children.length,
+        4
+      )
+      .setValues(
+        children
+      );
+
+
+    nextRow +=
+      children.length;
+
+  }
+
+
+  nextRow += 2;
+
+
+  /************************************************************
+   * PAYMENT HISTORY
+   ************************************************************/
+
+  historySheet
+    .getRange(
+      nextRow,
+      1
+    )
+    .setValue(
+      'PAYMENT HISTORY'
+    )
+    .setFontWeight(
+      'bold'
+    );
+
+
+  nextRow++;
+
+
+  historySheet
+    .getRange(
+      nextRow,
+      1,
+      1,
+      7
+    )
+    .setValues([
+      [
+        'Date',
+        'Payment ID',
+        'Payee',
+        'Amount Received',
+        'Allocated',
+        'Unallocated',
+        'Status'
+      ]
+    ])
+    .setFontWeight(
+      'bold'
+    );
+
+
+  nextRow++;
+
+
+  if (
+    payments.length > 0
+  ) {
+
+    historySheet
+      .getRange(
+        nextRow,
+        1,
+        payments.length,
+        7
+      )
+      .setValues(
+        payments
+      );
+
+
+    historySheet
+      .getRange(
+        nextRow,
+        4,
+        payments.length,
+        3
+      )
+      .setNumberFormat(
+        '₦#,##0.00'
+      );
+
+
+    nextRow +=
+      payments.length;
+
+  }
+
+
+  nextRow += 2;
+
+
+  /************************************************************
+   * ALLOCATION HISTORY
+   ************************************************************/
+
+  historySheet
+    .getRange(
+      nextRow,
+      1
+    )
+    .setValue(
+      'ALLOCATION DETAILS'
+    )
+    .setFontWeight(
+      'bold'
+    );
+
+
+  nextRow++;
+
+
+  historySheet
+    .getRange(
+      nextRow,
+      1,
+      1,
+      9
+    )
+    .setValues([
+      [
+        'Date',
+        'Payment ID',
+        'Student ID',
+        'Student No',
+        'Student Name',
+        'Class',
+        'Category',
+        'Amount',
+        'Remarks'
+      ]
+    ])
+    .setFontWeight(
+      'bold'
+    );
+
+
+  nextRow++;
+
+
+  if (
+    allocationHistory.length > 0
+  ) {
+
+    historySheet
+      .getRange(
+        nextRow,
+        1,
+        allocationHistory.length,
+        9
+      )
+      .setValues(
+        allocationHistory
+      );
+
+
+    historySheet
+      .getRange(
+        nextRow,
+        8,
+        allocationHistory.length,
+        1
+      )
+      .setNumberFormat(
+        '₦#,##0.00'
+      );
+
+  }
+
+
+  /************************************************************
+   * FINAL FORMATTING
+   ************************************************************/
+
+  historySheet
+    .autoResizeColumns(
+      1,
+      9
+    );
+
+
+  historySheet
+    .setFrozenRows(
+      4
+    );
+
+
+  historySheet.activate();
+
+
+  ui.alert(
+    'Family Payment History generated successfully for ' +
+    familyId +
+    '.'
+  );
+
+}
 
 /************************************************************
  * FIND PAYMENT ROW
