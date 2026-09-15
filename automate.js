@@ -453,21 +453,68 @@ function getStudentWorkbook() {
 /************************************************************
  * CREATE PAYMENT ALLOCATION LOG
  ************************************************************/
-
 function createAllocationLog() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(CONFIG.ALLOCATION_LOG_SHEET);
-  if (!sheet) sheet = ss.insertSheet(CONFIG.ALLOCATION_LOG_SHEET);
 
-  // Keep the original 14 columns in place so existing allocation history is not shifted.
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+  let sheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+  if (!sheet) {
+    sheet =
+      ss.insertSheet(
+        CONFIG.ALLOCATION_LOG_SHEET
+      );
+  }
+
+
+  /*
+   * Keep the original columns in their
+   * existing positions.
+   *
+   * Payment Type is added at the END
+   * so historical records are not shifted.
+   */
+
   const headers = [[
-    'Allocation ID', 'Payment ID', 'Payment Date', 'Parent No',
-    'Parent / Payee', 'Student No', 'Student Name', 'Class',
-    'Category', 'Amount', 'Receipt No', 'Remarks', 'Entered By', 'Logged At',
-    'Family ID', 'Student ID'
+
+    'Allocation ID',
+    'Payment ID',
+    'Payment Date',
+    'Parent No',
+    'Parent / Payee',
+    'Student No',
+    'Student Name',
+    'Class',
+    'Category',
+    'Amount',
+    'Receipt No',
+    'Remarks',
+    'Entered By',
+    'Logged At',
+    'Family ID',
+    'Student ID',
+    'Payment Type'
+
   ]];
-  sheet.getRange(1, 1, 1, headers[0].length).setValues(headers).setFontWeight('bold');
+
+
+  sheet
+    .getRange(
+      1,
+      1,
+      1,
+      headers[0].length
+    )
+    .setValues(headers)
+    .setFontWeight('bold');
+
+
   sheet.setFrozenRows(1);
+
 }
 
 
@@ -482,29 +529,88 @@ function createAllocationLog() {
  ************************************************************/
 
 function createAllocationEntrySheet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(CONFIG.ALLOCATION_ENTRY_SHEET);
-  if (!sheet) sheet = ss.insertSheet(CONFIG.ALLOCATION_ENTRY_SHEET);
+
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+  let sheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_ENTRY_SHEET
+    );
+
+  if (!sheet) {
+    sheet =
+      ss.insertSheet(
+        CONFIG.ALLOCATION_ENTRY_SHEET
+      );
+  }
+
+
   sheet.clear();
 
-  sheet.getRange('A1').setValue('PAYMENT ALLOCATION').setFontWeight('bold').setFontSize(14);
-  sheet.getRange('A3').setValue('Payment ID');
-  sheet.getRange('A4').setValue('Payment Date');
-  sheet.getRange('A5').setValue('Parent No');
-  sheet.getRange('A6').setValue('Family ID');
-  sheet.getRange('A7').setValue('Parent / Payee');
-  sheet.getRange('A8').setValue('Amount Received');
-  sheet.getRange('A9').setValue('Already Allocated');
-  sheet.getRange('A10').setValue('Remaining To Allocate');
+
+  sheet
+    .getRange('A1')
+    .setValue('PAYMENT ALLOCATION')
+    .setFontWeight('bold')
+    .setFontSize(14);
+
+
+  sheet.getRange('A3')
+    .setValue('Payment ID');
+
+  sheet.getRange('A4')
+    .setValue('Payment Date');
+
+  sheet.getRange('A5')
+    .setValue('Parent No');
+
+  sheet.getRange('A6')
+    .setValue('Family ID');
+
+  sheet.getRange('A7')
+    .setValue('Parent / Payee');
+
+  sheet.getRange('A8')
+    .setValue('Amount Received');
+
+  sheet.getRange('A9')
+    .setValue('Already Allocated');
+
+  sheet.getRange('A10')
+    .setValue('Remaining To Allocate');
+
 
   const headers = [[
-    'Student No', 'Student Name', 'Class', 'Amount Due',
-    'Category', 'Category Available', 'Amount To Allocate', 'Remarks', 'Student ID'
-  ]];
-  sheet.getRange(12, 1, 1, headers[0].length).setValues(headers).setFontWeight('bold');
-  sheet.setFrozenRows(12);
-}
 
+    'Student No',
+    'Student Name',
+    'Class',
+    'Amount Due',
+    'Category',
+    'Category Amount Paid',
+    'Payment Type',
+    'Amount To Allocate',
+    'Remarks',
+    'Student ID'
+
+  ]];
+
+
+  sheet
+    .getRange(
+      12,
+      1,
+      1,
+      headers[0].length
+    )
+    .setValues(headers)
+    .setFontWeight('bold');
+
+
+  sheet.setFrozenRows(12);
+
+}
 
 
 /************************************************************
@@ -856,10 +962,10 @@ function formatAllocationEntrySheet() {
     );
 
 
-  const categoryAvailableCol =
-    getEntryColumn(
-      'Category Available'
-    );
+ const categoryAvailableCol =
+  getEntryColumn(
+    'Category Amount Paid'
+  );
 
 
   const amountToAllocateCol =
@@ -2048,50 +2154,50 @@ function prepareSelectedPayment() {
       row
     );
 
-  
+
   const alreadyAllocated =
-  getAllocatedTotalForPayment(
-    paymentId
-  );
-
-
-const remainingToAllocate =
-  amountReceived -
-  alreadyAllocated;
-
-
-if (
-  remainingToAllocate <=
-  CONFIG.TOLERANCE
-) {
-
-  updateInflowAllocationStatus();
-
-
-  SpreadsheetApp
-    .getUi()
-    .alert(
-      'Payment Already Fully Allocated\n\n' +
-
-      'Payment ID: ' +
-      paymentId +
-      '\n' +
-
-      'Amount Received: ₦' +
-      amountReceived.toLocaleString() +
-      '\n' +
-
-      'Allocated: ₦' +
-      alreadyAllocated.toLocaleString() +
-      '\n\n' +
-
-      'No further allocation is required.'
+    getAllocatedTotalForPayment(
+      paymentId
     );
 
 
-  return;
+  const remainingToAllocate =
+    amountReceived -
+    alreadyAllocated;
 
-}
+
+  if (
+    remainingToAllocate <=
+    CONFIG.TOLERANCE
+  ) {
+
+    updateInflowAllocationStatus();
+
+
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        'Payment Already Fully Allocated\n\n' +
+
+        'Payment ID: ' +
+        paymentId +
+        '\n' +
+
+        'Amount Received: ₦' +
+        amountReceived.toLocaleString() +
+        '\n' +
+
+        'Allocated: ₦' +
+        alreadyAllocated.toLocaleString() +
+        '\n\n' +
+
+        'No further allocation is required.'
+      );
+
+
+    return;
+
+  }
 
 
   const date =
@@ -2112,15 +2218,32 @@ if (
       .getDisplayValue();
 
 
-  const parentNo = inflowSheet.getRange(row, CONFIG.INFLOW.PARENT_NO).getDisplayValue();
+  const parentNo =
+    inflowSheet
+      .getRange(
+        row,
+        CONFIG.INFLOW.PARENT_NO
+      )
+      .getDisplayValue();
 
-  const familyId = normalizeId(
-    inflowSheet.getRange(row, CONFIG.INFLOW.FAMILY_ID).getDisplayValue()
-  );
+
+  const familyId =
+    normalizeId(
+      inflowSheet
+        .getRange(
+          row,
+          CONFIG.INFLOW.FAMILY_ID
+        )
+        .getDisplayValue()
+    );
 
 
   if (!familyId) {
-    throw new Error('The selected payment has no permanent Family ID.');
+
+    throw new Error(
+      'The selected payment has no permanent Family ID.'
+    );
+
   }
 
 
@@ -2133,7 +2256,9 @@ if (
   if (!children.length) {
 
     throw new Error(
-      'No children were found for Family ID: ' + familyId + '.\n\n' +
+      'No children were found for Family ID: ' +
+      familyId +
+      '.\n\n' +
       'Check the Family ID on Daily Inflow and Parent/Student Financial Record.'
     );
 
@@ -2213,8 +2338,7 @@ if (
 
   /*
    * If no category was supplied in
-   * Master Daily Inflow, allow
-   * "Unspecified".
+   * Daily Inflow, allow Unspecified.
    */
 
   if (
@@ -2270,7 +2394,7 @@ if (
         13,
         1,
         lastRow - 12,
-        9
+        10
       )
       .clearContent();
 
@@ -2292,19 +2416,40 @@ if (
     .setValue(parentNo);
 
 
-  entrySheet.getRange('B6').setValue(familyId);
-  entrySheet.getRange('B7').setValue(payee);
-  entrySheet.getRange('B8').setValue(amountReceived);
-  entrySheet.getRange('B9').setValue(existing.total);
-  entrySheet.getRange('B10').setValue(remainingPayment);
+  entrySheet
+    .getRange('B6')
+    .setValue(familyId);
+
+
+  entrySheet
+    .getRange('B7')
+    .setValue(payee);
+
+
+  entrySheet
+    .getRange('B8')
+    .setValue(amountReceived);
+
+
+  entrySheet
+    .getRange('B9')
+    .setValue(existing.total);
+
+
+  entrySheet
+    .getRange('B10')
+    .setValue(remainingPayment);
 
 
   /*
    * Create one candidate row for
    * every Child x Category.
    *
-   * You enter only the amounts
-   * that apply.
+   * Payment Type defaults to EXPECTED.
+   *
+   * Change it to ADDITIONAL PURCHASE
+   * only when the payment is for an
+   * optional/replacement purchase.
    */
 
   const rows = [];
@@ -2330,6 +2475,8 @@ if (
 
             category.available,
 
+            'EXPECTED',
+
             '',
 
             '',
@@ -2338,11 +2485,11 @@ if (
 
           ]);
 
-      }
-    );
+        }
+      );
 
-  }
-);
+    }
+  );
 
 
   if (rows.length) {
@@ -2352,18 +2499,47 @@ if (
         13,
         1,
         rows.length,
-        9
+        10
       )
       .setValues(rows);
 
+
+    /*
+     * Dropdown for Payment Type.
+     */
+
+    const paymentTypeRule =
+      SpreadsheetApp
+        .newDataValidation()
+        .requireValueInList(
+          [
+            'EXPECTED',
+            'ADDITIONAL PURCHASE'
+          ],
+          true
+        )
+        .setAllowInvalid(false)
+        .build();
+
+
+    entrySheet
+      .getRange(
+        13,
+        7,
+        rows.length,
+        1
+      )
+      .setDataValidation(
+        paymentTypeRule
+      );
+
   }
+
 
   formatAllocationEntrySheet();
 
 
   entrySheet.activate();
-
-
 
 }
 
@@ -2377,91 +2553,506 @@ if (
  ************************************************************/
 
 function postAllocation() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const entrySheet = ss.getSheetByName(CONFIG.ALLOCATION_ENTRY_SHEET);
-  const logSheet = ss.getSheetByName(CONFIG.ALLOCATION_LOG_SHEET);
-  const inflowSheet = ss.getSheetByName(CONFIG.INFLOW_SHEET);
 
-  const paymentId = entrySheet.getRange('B3').getDisplayValue().trim();
-  const paymentDate = entrySheet.getRange('B4').getValue();
-  const parentNo = entrySheet.getRange('B5').getDisplayValue();
-  const familyId = normalizeId(entrySheet.getRange('B6').getDisplayValue());
-  const payee = entrySheet.getRange('B7').getDisplayValue();
-  const remainingBefore = money(entrySheet.getRange('B10').getValue());
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
 
-  if (!paymentId) throw new Error('No payment is currently loaded in Allocation_Entry.');
-  if (!familyId) throw new Error('This payment has no permanent Family ID.');
-  if (remainingBefore <= CONFIG.TOLERANCE) throw new Error('This payment is already fully allocated.');
 
-  const lastRow = entrySheet.getLastRow();
-  if (lastRow < 13) throw new Error('There are no allocation rows.');
-  const data = entrySheet.getRange(13, 1, lastRow - 12, 9).getValues();
+  const entrySheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_ENTRY_SHEET
+    );
+
+
+  const logSheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+
+  const inflowSheet =
+    ss.getSheetByName(
+      CONFIG.INFLOW_SHEET
+    );
+
+
+  const paymentId =
+    entrySheet
+      .getRange('B3')
+      .getDisplayValue()
+      .trim();
+
+
+  const paymentDate =
+    entrySheet
+      .getRange('B4')
+      .getValue();
+
+
+  const parentNo =
+    entrySheet
+      .getRange('B5')
+      .getDisplayValue();
+
+
+  const familyId =
+    normalizeId(
+      entrySheet
+        .getRange('B6')
+        .getDisplayValue()
+    );
+
+
+  const payee =
+    entrySheet
+      .getRange('B7')
+      .getDisplayValue();
+
+
+  const remainingBefore =
+    money(
+      entrySheet
+        .getRange('B10')
+        .getValue()
+    );
+
+
+  if (!paymentId) {
+
+    throw new Error(
+      'No payment is currently loaded in Allocation_Entry.'
+    );
+
+  }
+
+
+  if (!familyId) {
+
+    throw new Error(
+      'This payment has no permanent Family ID.'
+    );
+
+  }
+
+
+  if (
+    remainingBefore <=
+    CONFIG.TOLERANCE
+  ) {
+
+    throw new Error(
+      'This payment is already fully allocated.'
+    );
+
+  }
+
+
+  const lastRow =
+    entrySheet.getLastRow();
+
+
+  if (lastRow < 13) {
+
+    throw new Error(
+      'There are no allocation rows.'
+    );
+
+  }
+
+
+  const data =
+    entrySheet
+      .getRange(
+        13,
+        1,
+        lastRow - 12,
+        10
+      )
+      .getValues();
+
+
   const allocations = [];
+
   const categoryTotals = {};
+
   let allocationTotal = 0;
 
-  data.forEach(row => {
-    const studentNo = row[0];
-    const studentName = row[1];
-    const studentClass = row[2];
-    const category = row[4];
-    const categoryAvailable = money(row[5]);
-    const amount = money(row[6]);
-    const remarks = row[7];
-    const studentId = normalizeId(row[8]);
-    if (amount <= 0) return;
-    if (!studentId) throw new Error('An allocation amount was entered for ' + studentName + ' but the student has no permanent Student ID.');
-    if (amount > categoryAvailable + CONFIG.TOLERANCE) throw new Error(studentName + ' has an allocation greater than the available amount for ' + category + '.');
 
-    allocations.push({ studentId, studentNo, studentName, studentClass, category, amount, remarks });
-    allocationTotal += amount;
-    categoryTotals[category] = (categoryTotals[category] || 0) + amount;
-  });
+  data.forEach(
+    row => {
 
-  if (!allocations.length) throw new Error('Enter at least one allocation amount.');
-  if (allocationTotal > remainingBefore + CONFIG.TOLERANCE) {
-    throw new Error('You are attempting to allocate ₦' + allocationTotal.toLocaleString() + ' but only ₦' + remainingBefore.toLocaleString() + ' remains on this payment.');
+      const studentNo =
+        row[0];
+
+
+      const studentName =
+        row[1];
+
+
+      const studentClass =
+        row[2];
+
+
+      const category =
+        row[4];
+
+
+      const categoryAmountPaid =
+        money(
+          row[5]
+        );
+
+
+      const paymentType =
+        String(
+          row[6] ||
+          'EXPECTED'
+        )
+          .trim()
+          .toUpperCase();
+
+
+      const amount =
+        money(
+          row[7]
+        );
+
+
+      const remarks =
+        row[8];
+
+
+      const studentId =
+        normalizeId(
+          row[9]
+        );
+
+
+      if (
+        amount <= 0
+      ) {
+        return;
+      }
+
+
+      if (!studentId) {
+
+        throw new Error(
+          'An allocation amount was entered for ' +
+          studentName +
+          ' but the student has no permanent Student ID.'
+        );
+
+      }
+
+
+      if (
+        paymentType !==
+          'EXPECTED' &&
+        paymentType !==
+          'ADDITIONAL PURCHASE'
+      ) {
+
+        throw new Error(
+          'Invalid Payment Type for ' +
+          studentName +
+          '. Use EXPECTED or ADDITIONAL PURCHASE.'
+        );
+
+      }
+
+
+      if (
+        amount >
+        categoryAmountPaid +
+          CONFIG.TOLERANCE
+      ) {
+
+        throw new Error(
+          studentName +
+          ' has an allocation greater than the Category Amount Paid for ' +
+          category +
+          '.'
+        );
+
+      }
+
+
+      allocations.push({
+
+        studentId:
+          studentId,
+
+        studentNo:
+          studentNo,
+
+        studentName:
+          studentName,
+
+        studentClass:
+          studentClass,
+
+        category:
+          category,
+
+        paymentType:
+          paymentType,
+
+        amount:
+          amount,
+
+        remarks:
+          remarks
+
+      });
+
+
+      allocationTotal +=
+        amount;
+
+
+      categoryTotals[category] =
+        (
+          categoryTotals[category] ||
+          0
+        ) + amount;
+
+    }
+  );
+
+
+  if (!allocations.length) {
+
+    throw new Error(
+      'Enter at least one allocation amount.'
+    );
+
   }
+
+
+  if (
+    allocationTotal >
+    remainingBefore +
+      CONFIG.TOLERANCE
+  ) {
+
+    throw new Error(
+      'You are attempting to allocate ₦' +
+      allocationTotal.toLocaleString() +
+      ' but only ₦' +
+      remainingBefore.toLocaleString() +
+      ' remains on this payment.'
+    );
+
+  }
+
 
   const availableByCategory = {};
-  data.forEach(row => {
-    const category = row[4];
-    const available = money(row[5]);
-    if (category && available > 0) availableByCategory[category] = available;
-  });
-  Object.keys(categoryTotals).forEach(category => {
-    if (categoryTotals[category] > availableByCategory[category] + CONFIG.TOLERANCE)
-      throw new Error('Total allocation for ' + category + ' exceeds the amount available.');
-  });
 
-  const paymentIdCol = findHeaderColumn(inflowSheet, 'Payment ID');
-  const receiptCol = findHeaderColumn(inflowSheet, 'Receipt No');
-  let receiptNo = '';
-  const inflowData = inflowSheet.getDataRange().getValues();
-  for (let i = 1; i < inflowData.length; i++) {
-    if (normalize(inflowData[i][paymentIdCol - 1]) === normalize(paymentId)) {
-      receiptNo = inflowData[i][receiptCol - 1];
-      break;
+
+  data.forEach(
+    row => {
+
+      const category =
+        row[4];
+
+
+      const available =
+        money(
+          row[5]
+        );
+
+
+      if (
+        category &&
+        available > 0
+      ) {
+
+        availableByCategory[
+          category
+        ] =
+          available;
+
+      }
+
     }
+  );
+
+
+  Object
+    .keys(
+      categoryTotals
+    )
+    .forEach(
+      category => {
+
+        if (
+          categoryTotals[category] >
+          availableByCategory[category] +
+            CONFIG.TOLERANCE
+        ) {
+
+          throw new Error(
+            'Total allocation for ' +
+            category +
+            ' exceeds the Category Amount Paid.'
+          );
+
+        }
+
+      }
+    );
+
+
+  const paymentIdCol =
+    findHeaderColumn(
+      inflowSheet,
+      'Payment ID'
+    );
+
+
+  const receiptCol =
+    findHeaderColumn(
+      inflowSheet,
+      'Receipt No'
+    );
+
+
+  let receiptNo = '';
+
+
+  const inflowData =
+    inflowSheet
+      .getDataRange()
+      .getValues();
+
+
+  for (
+    let i = 1;
+    i < inflowData.length;
+    i++
+  ) {
+
+    if (
+      normalize(
+        inflowData[i]
+          [paymentIdCol - 1]
+      ) ===
+      normalize(paymentId)
+    ) {
+
+      receiptNo =
+        inflowData[i]
+          [receiptCol - 1];
+
+      break;
+
+    }
+
   }
 
-  const enteredBy = Session.getActiveUser().getEmail() || 'Unknown User';
-  const logRows = allocations.map(a => [
-    'AL-' + Utilities.getUuid().substring(0, 10).toUpperCase(),
-    paymentId, paymentDate, parentNo, payee, a.studentNo, a.studentName, a.studentClass,
-    a.category, a.amount, receiptNo, a.remarks, enteredBy, new Date(), familyId, a.studentId
-  ]);
-  logSheet.getRange(logSheet.getLastRow() + 1, 1, logRows.length, 16).setValues(logRows);
+
+  const enteredBy =
+    Session
+      .getActiveUser()
+      .getEmail() ||
+    'Unknown User';
+
+
+  const logRows =
+    allocations.map(
+      a => [
+
+        'AL-' +
+        Utilities
+          .getUuid()
+          .substring(
+            0,
+            10
+          )
+          .toUpperCase(),
+
+        paymentId,
+
+        paymentDate,
+
+        parentNo,
+
+        payee,
+
+        a.studentNo,
+
+        a.studentName,
+
+        a.studentClass,
+
+        a.category,
+
+        a.amount,
+
+        receiptNo,
+
+        a.remarks,
+
+        enteredBy,
+
+        new Date(),
+
+        familyId,
+
+        a.studentId,
+
+        a.paymentType
+
+      ]
+    );
+
+
+  logSheet
+    .getRange(
+      logSheet.getLastRow() + 1,
+      1,
+      logRows.length,
+      17
+    )
+    .setValues(
+      logRows
+    );
+
 
   refreshAllBalances();
-  const paymentRow = findPaymentRow(paymentId);
-  if (paymentRow) {
-    inflowSheet.getRange(paymentRow, 1).activate();
-    prepareSelectedPayment();
-  }
-  SpreadsheetApp.getUi().alert('Allocation posted successfully.\n\nAllocated now: ₦' + allocationTotal.toLocaleString());
-}
 
+
+  const paymentRow =
+    findPaymentRow(
+      paymentId
+    );
+
+
+  if (paymentRow) {
+
+    inflowSheet
+      .getRange(
+        paymentRow,
+        1
+      )
+      .activate();
+
+
+    prepareSelectedPayment();
+
+  }
+
+
+  SpreadsheetApp
+    .getUi()
+    .alert(
+      'Allocation posted successfully.\n\n' +
+      'Allocated now: ₦' +
+      allocationTotal.toLocaleString()
+    );
+
+}
 
 function reverseSelectedAllocation() {
 
@@ -2877,7 +3468,6 @@ function showFamilyPaymentHistory() {
   const ss =
     SpreadsheetApp.getActiveSpreadsheet();
 
-
   const ui =
     SpreadsheetApp.getUi();
 
@@ -2915,7 +3505,6 @@ function showFamilyPaymentHistory() {
     );
 
     return;
-
   }
 
 
@@ -2992,7 +3581,7 @@ function showFamilyPaymentHistory() {
 
 
   /************************************************************
-   * FIND PARENT MASTER FAMILY ID
+   * FAMILY INFORMATION
    ************************************************************/
 
   const parentFamilyIdCol =
@@ -3019,18 +3608,15 @@ function showFamilyPaymentHistory() {
       .getValues();
 
 
-  /************************************************************
-   * GET FAMILY INFORMATION
-   ************************************************************/
-
   let parentName = '';
 
   const children = [];
 
-
   let currentFamilyId = '';
 
   let currentParentName = '';
+
+  let expectedFamilyCharges = 0;
 
 
   for (
@@ -3085,6 +3671,32 @@ function showFamilyPaymentHistory() {
     }
 
 
+    /*
+     * FAMILY TOTAL DUE
+     *
+     * This is a family-level figure.
+     * We read it once rather than
+     * adding it for every child.
+     */
+
+    const rowFamilyTotalDue =
+      money(
+        parentData[i]
+          [CONFIG.PARENT.FAMILY_TOTAL_DUE - 1]
+      );
+
+
+    if (
+      expectedFamilyCharges <= 0 &&
+      rowFamilyTotalDue > 0
+    ) {
+
+      expectedFamilyCharges =
+        rowFamilyTotalDue;
+
+    }
+
+
     const studentName =
       parentData[i]
         [CONFIG.PARENT.STUDENT_NAME - 1];
@@ -3095,6 +3707,18 @@ function showFamilyPaymentHistory() {
     ) {
       continue;
     }
+
+
+    /*
+     * Individual Amount Due
+     * comes directly from Parent Master.
+     */
+
+    const amountDue =
+      money(
+        parentData[i]
+          [CONFIG.PARENT.INDIVIDUAL_TOTAL_DUE - 1]
+      );
 
 
     children.push([
@@ -3112,7 +3736,9 @@ function showFamilyPaymentHistory() {
       studentName,
 
       parentData[i]
-        [CONFIG.PARENT.STUDENT_CLASS - 1]
+        [CONFIG.PARENT.STUDENT_CLASS - 1],
+
+      amountDue
 
     ]);
 
@@ -3130,7 +3756,6 @@ function showFamilyPaymentHistory() {
     );
 
     return;
-
   }
 
 
@@ -3140,8 +3765,9 @@ function showFamilyPaymentHistory() {
 
   ensureInflowAutomationColumns();
 
-const inflowFamilyIdCol =
-  CONFIG.INFLOW.FAMILY_ID;
+
+  const inflowFamilyIdCol =
+    CONFIG.INFLOW.FAMILY_ID;
 
 
   const inflowPaymentIdCol =
@@ -3170,11 +3796,6 @@ const inflowFamilyIdCol =
       inflowSheet,
       'Allocation Status'
     );
-
-
-
-
-  
 
 
   const inflowData =
@@ -3351,6 +3972,13 @@ const inflowFamilyIdCol =
     );
 
 
+  const allocationPaymentTypeCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Payment Type'
+    );
+
+
   const allocationRemarksCol =
     findHeaderColumn(
       allocationSheet,
@@ -3379,6 +4007,11 @@ const inflowFamilyIdCol =
   const allocationHistory = [];
 
 
+  let expectedPayments = 0;
+
+  let additionalPurchases = 0;
+
+
   for (
     let i = 1;
     i < allocationData.length;
@@ -3397,6 +4030,47 @@ const inflowFamilyIdCol =
       familyId
     ) {
       continue;
+    }
+
+
+    /*
+     * Historical records that have
+     * no Payment Type are treated
+     * as EXPECTED.
+     */
+
+    const paymentType =
+      allocationPaymentTypeCol
+        ? String(
+            allocationData[i]
+              [allocationPaymentTypeCol - 1] ||
+            'EXPECTED'
+          )
+            .trim()
+            .toUpperCase()
+        : 'EXPECTED';
+
+
+    const allocationAmount =
+      money(
+        allocationData[i]
+          [allocationAmountCol - 1]
+      );
+
+
+    if (
+      paymentType ===
+      'ADDITIONAL PURCHASE'
+    ) {
+
+      additionalPurchases +=
+        allocationAmount;
+
+    } else {
+
+      expectedPayments +=
+        allocationAmount;
+
     }
 
 
@@ -3437,10 +4111,9 @@ const inflowFamilyIdCol =
             [allocationCategoryCol - 1]
         : '',
 
-      money(
-        allocationData[i]
-          [allocationAmountCol - 1]
-      ),
+      paymentType,
+
+      allocationAmount,
 
       allocationRemarksCol
         ? allocationData[i]
@@ -3453,129 +4126,62 @@ const inflowFamilyIdCol =
 
 
   /************************************************************
-   * BUILD REPORT
+   * EXPECTED CHARGES OUTSTANDING
+   ************************************************************/
+
+  const expectedChargesOutstanding =
+    expectedFamilyCharges -
+    expectedPayments;
+
+
+  /************************************************************
+   * REPORT TITLE
    ************************************************************/
 
   historySheet
-    .getRange(
-      'A1'
-    )
+    .getRange('A1')
     .setValue(
       'FAMILY PAYMENT HISTORY'
     )
-    .setFontWeight(
-      'bold'
-    )
-    .setFontSize(
-      16
-    );
+    .setFontWeight('bold')
+    .setFontSize(16);
 
 
   historySheet
-    .getRange(
-      'A3'
-    )
-    .setValue(
-      'Family ID'
-    );
+    .getRange('A3')
+    .setValue('Family ID');
 
 
   historySheet
-    .getRange(
-      'B3'
-    )
-    .setValue(
-      familyId
-    );
+    .getRange('B3')
+    .setValue(familyId);
 
 
   historySheet
-    .getRange(
-      'A4'
-    )
+    .getRange('A4')
     .setValue(
       'Parent / Guardian'
     );
 
 
   historySheet
-    .getRange(
-      'B4'
-    )
-    .setValue(
-      parentName
-    );
+    .getRange('B4')
+    .setValue(parentName);
 
 
   /************************************************************
    * SUMMARY
    ************************************************************/
 
-  historySheet
-    .getRange(
-      'A6:B9'
-    )
-    .setValues([
-
-      [
-        'Summary',
-        'Amount'
-      ],
-
-      [
-        'Total Received',
-        totalReceived
-      ],
-
-      [
-        'Total Allocated',
-        totalAllocated
-      ],
-
-      [
-        'Total Unallocated',
-        totalUnallocated
-      ]
-
-    ]);
+  let nextRow = 6;
 
 
-  historySheet
-    .getRange(
-      'A6:B6'
-    )
-    .setFontWeight(
-      'bold'
-    );
-
-
-  historySheet
-    .getRange(
-      'B7:B9'
-    )
-    .setNumberFormat(
-      '₦#,##0.00'
-    );
-
-
-  /************************************************************
-   * CHILDREN
-   ************************************************************/
-
-  let nextRow = 11;
-
-
-  historySheet
-    .getRange(
-      nextRow,
-      1
-    )
-    .setValue(
-      'CHILDREN'
-    )
-    .setFontWeight(
-      'bold'
-    );
+  formatFamilyHistorySection(
+    historySheet,
+    nextRow,
+    'SUMMARY',
+    10
+  );
 
 
   nextRow++;
@@ -3586,19 +4192,118 @@ const inflowFamilyIdCol =
       nextRow,
       1,
       1,
-      4
+      2
+    )
+    .setValues([
+      [
+        'Summary',
+        'Amount'
+      ]
+    ])
+    .setFontWeight('bold');
+
+
+  nextRow++;
+
+
+  const summaryRows = [[
+
+    'Expected Family Charges',
+    expectedFamilyCharges
+
+  ], [
+
+    'Expected Charges Paid',
+    expectedPayments
+
+  ], [
+
+    'Expected Charges Outstanding',
+    expectedChargesOutstanding
+
+  ], [
+
+    'Additional Purchases',
+    additionalPurchases
+
+  ], [
+
+    'Total Received',
+    totalReceived
+
+  ], [
+
+    'Total Allocated',
+    totalAllocated
+
+  ], [
+
+    'Total Unallocated',
+    totalUnallocated
+
+  ]];
+
+
+  historySheet
+    .getRange(
+      nextRow,
+      1,
+      summaryRows.length,
+      2
+    )
+    .setValues(
+      summaryRows
+    );
+
+
+  historySheet
+    .getRange(
+      nextRow,
+      2,
+      summaryRows.length,
+      1
+    )
+    .setNumberFormat(
+      '₦#,##0.00'
+    );
+
+
+  nextRow +=
+    summaryRows.length + 2;
+
+
+  /************************************************************
+   * CHILDREN
+   ************************************************************/
+
+  formatFamilyHistorySection(
+    historySheet,
+    nextRow,
+    'CHILDREN',
+    10
+  );
+
+
+  nextRow++;
+
+
+  historySheet
+    .getRange(
+      nextRow,
+      1,
+      1,
+      5
     )
     .setValues([
       [
         'Student ID',
         'Student No',
         'Student Name',
-        'Class'
+        'Class',
+        'Amount Due'
       ]
     ])
-    .setFontWeight(
-      'bold'
-    );
+    .setFontWeight('bold');
 
 
   nextRow++;
@@ -3613,10 +4318,26 @@ const inflowFamilyIdCol =
         nextRow,
         1,
         children.length,
-        4
+        5
       )
       .setValues(
         children
+      );
+
+
+    /*
+     * Format Amount Due as Naira.
+     */
+
+    historySheet
+      .getRange(
+        nextRow,
+        5,
+        children.length,
+        1
+      )
+      .setNumberFormat(
+        '₦#,##0.00'
       );
 
 
@@ -3633,17 +4354,12 @@ const inflowFamilyIdCol =
    * PAYMENT HISTORY
    ************************************************************/
 
-  historySheet
-    .getRange(
-      nextRow,
-      1
-    )
-    .setValue(
-      'PAYMENT HISTORY'
-    )
-    .setFontWeight(
-      'bold'
-    );
+  formatFamilyHistorySection(
+    historySheet,
+    nextRow,
+    'PAYMENT HISTORY',
+    10
+  );
 
 
   nextRow++;
@@ -3667,9 +4383,7 @@ const inflowFamilyIdCol =
         'Status'
       ]
     ])
-    .setFontWeight(
-      'bold'
-    );
+    .setFontWeight('bold');
 
 
   nextRow++;
@@ -3716,17 +4430,12 @@ const inflowFamilyIdCol =
    * ALLOCATION HISTORY
    ************************************************************/
 
-  historySheet
-    .getRange(
-      nextRow,
-      1
-    )
-    .setValue(
-      'ALLOCATION DETAILS'
-    )
-    .setFontWeight(
-      'bold'
-    );
+  formatFamilyHistorySection(
+    historySheet,
+    nextRow,
+    'ALLOCATION DETAILS',
+    10
+  );
 
 
   nextRow++;
@@ -3737,7 +4446,7 @@ const inflowFamilyIdCol =
       nextRow,
       1,
       1,
-      9
+      10
     )
     .setValues([
       [
@@ -3748,13 +4457,12 @@ const inflowFamilyIdCol =
         'Student Name',
         'Class',
         'Category',
+        'Payment Type',
         'Amount',
         'Remarks'
       ]
     ])
-    .setFontWeight(
-      'bold'
-    );
+    .setFontWeight('bold');
 
 
   nextRow++;
@@ -3769,7 +4477,7 @@ const inflowFamilyIdCol =
         nextRow,
         1,
         allocationHistory.length,
-        9
+        10
       )
       .setValues(
         allocationHistory
@@ -3779,7 +4487,7 @@ const inflowFamilyIdCol =
     historySheet
       .getRange(
         nextRow,
-        8,
+        9,
         allocationHistory.length,
         1
       )
@@ -3797,14 +4505,12 @@ const inflowFamilyIdCol =
   historySheet
     .autoResizeColumns(
       1,
-      9
+      10
     );
 
 
   historySheet
-    .setFrozenRows(
-      4
-    );
+    .setFrozenRows(4);
 
 
   historySheet.activate();
@@ -3818,386 +4524,38 @@ const inflowFamilyIdCol =
 
 }
 
-/************************************************************
- * FIND PAYMENT ROW
- ************************************************************/
-
-function findPaymentRow(
-  paymentId
+function formatFamilyHistorySection(
+  sheet,
+  row,
+  title,
+  totalColumns
 ) {
 
-  const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-
-  const sheet =
-    ss.getSheetByName(
-      CONFIG.INFLOW_SHEET
+  const range =
+    sheet.getRange(
+      row,
+      1,
+      1,
+      totalColumns
     );
 
 
-  const paymentIdCol =
-    findHeaderColumn(
-      sheet,
-      'Payment ID'
+  range
+    .setBackground(
+      '#fff2cc'
+    )
+    .setFontWeight(
+      'bold'
     );
 
 
-  if (!paymentIdCol) {
-    return 0;
-  }
-
-
-  const data =
-    sheet
-      .getRange(
-        2,
-        paymentIdCol,
-        Math.max(
-          sheet.getLastRow() - 1,
-          1
-        ),
-        1
-      )
-      .getDisplayValues();
-
-
-  for (
-    let i = 0;
-    i < data.length;
-    i++
-  ) {
-
-    if (
-      normalize(data[i][0]) ===
-      normalize(paymentId)
-    ) {
-
-      return i + 2;
-
-    }
-
-  }
-
-
-  return 0;
-
-}
-
-
-
-/************************************************************
- * REFRESH EVERYTHING
- ************************************************************/
-
-function refreshAllBalances() {
-
-  ensureInflowAutomationColumns();
-
-  createAllocationLog();
-
-  migrateLegacyHistoryToPermanentIds();
-
-  updateInflowAllocationStatus();
-
-  updateStudentMasterPayments();
-
-}
-
-
-
-/************************************************************
- * UPDATE MASTER DAILY INFLOW STATUS
- ************************************************************/
-function updateInflowAllocationStatus() {
-
-  const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-
-  const inflow =
-    ss.getSheetByName(
-      CONFIG.INFLOW_SHEET
+  sheet
+    .getRange(
+      row,
+      1
+    )
+    .setValue(
+      title
     );
 
-
-  const logSheet =
-    ss.getSheetByName(
-      CONFIG.ALLOCATION_LOG_SHEET
-    );
-
-
-  const paymentIdCol =
-    findHeaderColumn(
-      inflow,
-      'Payment ID'
-    );
-
-
-  const allocatedCol =
-    findHeaderColumn(
-      inflow,
-      'Allocated Amount'
-    );
-
-
-  const unallocatedCol =
-    findHeaderColumn(
-      inflow,
-      'Unallocated Amount'
-    );
-
-
-  const statusCol =
-    findHeaderColumn(
-      inflow,
-      'Allocation Status'
-    );
-
-
-  /*
-   * Find Payment_Allocation columns by header.
-   * This avoids problems when Family ID,
-   * Student ID or other columns are inserted.
-   */
-
-  const logPaymentIdCol =
-    findHeaderColumn(
-      logSheet,
-      'Payment ID'
-    );
-
-
-  const logAmountCol =
-    findHeaderColumn(
-      logSheet,
-      'Amount'
-    );
-
-
-  if (
-    !logPaymentIdCol ||
-    !logAmountCol
-  ) {
-
-    throw new Error(
-      'Payment_Allocation must contain Payment ID and Amount columns.'
-    );
-
-  }
-
-
-  /*
-   * Payment ID -> Allocated Total
-   */
-
-  const allocatedLookup = {};
-
-
-  if (
-    logSheet.getLastRow() >= 2
-  ) {
-
-    const allocationData =
-      logSheet
-        .getDataRange()
-        .getValues();
-
-
-    for (
-      let i = 1;
-      i < allocationData.length;
-      i++
-    ) {
-
-      const paymentId =
-        normalize(
-          allocationData[i]
-            [logPaymentIdCol - 1]
-        );
-
-
-      const amount =
-        money(
-          allocationData[i]
-            [logAmountCol - 1]
-        );
-
-
-      if (!paymentId) {
-        continue;
-      }
-
-
-      allocatedLookup[paymentId] =
-        (
-          allocatedLookup[paymentId] ||
-          0
-        ) + amount;
-
-    }
-
-  }
-
-
-  const lastRow =
-    inflow.getLastRow();
-
-
-  for (
-    let row = 2;
-    row <= lastRow;
-    row++
-  ) {
-
-    const amountReceived =
-      money(
-        inflow
-          .getRange(
-            row,
-            CONFIG.INFLOW.AMOUNT_RECEIVED
-          )
-          .getValue()
-      );
-
-
-    if (
-      amountReceived <= 0
-    ) {
-      continue;
-    }
-
-
-    const paymentId =
-      ensurePaymentId(
-        inflow,
-        row
-      );
-
-
-    const allocated =
-      allocatedLookup[
-        normalize(paymentId)
-      ] || 0;
-
-
-    const remaining =
-      amountReceived -
-      allocated;
-
-
-    let status =
-      'UNALLOCATED';
-
-
-    if (
-      Math.abs(remaining) <=
-      CONFIG.TOLERANCE
-    ) {
-
-      status =
-        'FULLY ALLOCATED';
-
-    } else if (
-      allocated > 0
-    ) {
-
-      status =
-        'PARTIALLY ALLOCATED';
-
-    }
-
-
-    inflow
-      .getRange(
-        row,
-        allocatedCol
-      )
-      .setValue(
-        allocated
-      );
-
-
-    inflow
-      .getRange(
-        row,
-        unallocatedCol
-      )
-      .setValue(
-        remaining
-      );
-
-
-    inflow
-      .getRange(
-        row,
-        statusCol
-      )
-      .setValue(
-        status
-      );
-
-  }
-
-}
-
-
-
-/************************************************************
- * UPDATE STUDENT MASTER
- *
- * Amount Paid =
- *
- * Existing Opening Paid Balance
- * +
- * New Payment Allocations
- *
- * Amount Owing =
- *
- * Total - Amount Paid
- ************************************************************/
-
-function updateStudentMasterPayments() {
-  const financeSS = SpreadsheetApp.getActiveSpreadsheet();
-  let baselineSheet = financeSS.getSheetByName(CONFIG.BASELINE_SHEET);
-  if (!baselineSheet || baselineSheet.getLastRow() < 2) {
-    createPaymentBaseline();
-    baselineSheet = financeSS.getSheetByName(CONFIG.BASELINE_SHEET);
-  }
-
-  const allocationSheet = financeSS.getSheetByName(CONFIG.ALLOCATION_LOG_SHEET);
-  const baselineData = baselineSheet.getDataRange().getValues();
-  const openingPaid = {};
-  const baselineStudentIdCol = findHeaderColumn(baselineSheet, 'Student ID');
-  const baselineOpeningCol = findHeaderColumn(baselineSheet, 'Opening Amount Paid');
-  if (!baselineStudentIdCol || !baselineOpeningCol) {
-    throw new Error('The payment baseline has not yet been migrated to permanent Student IDs. Run Initial Setup once.');
-  }
-  for (let i = 1; i < baselineData.length; i++) {
-    const studentId = normalizeId(baselineData[i][baselineStudentIdCol - 1]);
-    if (studentId) openingPaid[studentId] = money(baselineData[i][baselineOpeningCol - 1]);
-  }
-
-  const newPayments = {};
-  if (allocationSheet.getLastRow() >= 2) {
-    const allocationData = allocationSheet.getDataRange().getValues();
-    const logStudentIdCol = findHeaderColumn(allocationSheet, 'Student ID');
-    const logAmountCol = findHeaderColumn(allocationSheet, 'Amount');
-    for (let i = 1; i < allocationData.length; i++) {
-      const studentId = normalizeId(allocationData[i][logStudentIdCol - 1]);
-      if (!studentId) continue;
-      newPayments[studentId] = (newPayments[studentId] || 0) + money(allocationData[i][logAmountCol - 1]);
-    }
-  }
-
-  const studentSheet = getStudentWorkbook().getSheetByName(CONFIG.STUDENT_MASTER_SHEET);
-  const studentData = studentSheet.getDataRange().getValues();
-  for (let i = 1; i < studentData.length; i++) {
-    const row = i + 1;
-    const studentId = normalizeId(studentData[i][CONFIG.STUDENT.STUDENT_ID - 1]);
-    if (!studentId) continue;
-    const amountPaid = (openingPaid[studentId] || 0) + (newPayments[studentId] || 0);
-    studentSheet.getRange(row, CONFIG.STUDENT.AMOUNT_PAID).setValue(amountPaid);
-    studentSheet.getRange(row, CONFIG.STUDENT.AMOUNT_OWING).setFormula('=IFERROR(Q' + row + '-R' + row + ',"")');
-  }
 }
