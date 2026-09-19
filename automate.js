@@ -57,6 +57,8 @@ const CONFIG = {
 
   FAMILY_HISTORY_SHEET: 'Family_Payment_History',
 
+  ITEM_PAYMENT_REPORT_SHEET: 'Item_Payment_Report',
+
 
   // -------------------------
   // PARENT/STUDENT COLUMNS
@@ -72,52 +74,50 @@ const CONFIG = {
 
   PARENT: {
 
-    FAMILY_SN: 1,
-    PARENT_NAME: 2,
-    PHONE: 3,
-    FAMILY_ID: 4,       // D - permanent family automation key
-    PARENT_NO: 1,       // display only
+  FAMILY_SN: 1,          // A
+  PARENT_NAME: 2,        // B
+  PHONE: 3,              // C
+  FAMILY_ID: 4,          // D - permanent family automation key
+  PARENT_NO: 1,          // display only
 
-    CHILD_SN: 5,
-    STUDENT_NAME: 6,
-    STUDENT_NO: 7,      // display only
-    STUDENT_ID: 8,      // permanent student automation key
-    STUDENT_CLASS: 9,
-    GENDER: 10,
-    SCHOOL_FEE: 11,
-    LESSON: 12,
-    OTHER_PAYMENT: 13,
-    OTHER_PAYMENT_TOTAL: 14,
-    PRESENT_TERM_SCHOOL_FEES_TOTAL: 16,
-    USES_BUS: 17,
-    BUS_FEE: 18,
-    BUS_FAMILY_TOTAL: 19,
-    INDIVIDUAL_CURRENT_TERM_TOTAL: 20,
-    FAMILY_CURRENT_TERM_TOTAL: 21,
-    INDIVIDUAL_BROUGHT_FORWARD: 22,
-    FAMILY_BROUGHT_FORWARD: 23,
-    INDIVIDUAL_TOTAL_DUE: 25,
-    FAMILY_TOTAL_DUE: 26,
-    PAYMENT_1_INDIVIDUAL: 27,
-    PAYMENT_1_FAMILY: 28,
-    INDIVIDUAL_OLD_OUTSTANDING: 29,
-    PAYMENT_1_DATE: 30,
-    PAYMENT_1_RECEIPT: 31,
-    BALANCE_1_FAMILY: 32,
-    BALANCE_1_INDIVIDUAL: 33,
-    PAYMENT_2_INDIVIDUAL: 34,
-    PAYMENT_2_FAMILY: 35,
-    PAYMENT_2_DATE: 36,
-    PAYMENT_2_RECEIPT: 37,
-    BALANCE_2_FAMILY: 38,
-    BALANCE_2_INDIVIDUAL: 39,
-    PAYMENT_3_INDIVIDUAL: 40,
-    PAYMENT_3_FAMILY: 41,
-    PAYMENT_3_DATE: 42,
-    PAYMENT_3_RECEIPT: 43,
-    BALANCE_3_FAMILY: 44,
-    BALANCE_3_INDIVIDUAL: 45
-  },
+  CHILD_SN: 5,           // E
+  STUDENT_NAME: 6,       // F
+  STUDENT_NO: 7,         // G - display only
+  STUDENT_ID: 8,         // H - permanent student automation key
+  STUDENT_CLASS: 9,      // I
+  GENDER: 10,            // J
+
+  SCHOOL_FEE: 11,        // K
+  LESSON: 12,            // L
+
+  TEXTBOOKS: 13,         // M
+  SCHOOL_UNIFORMS: 14,   // N
+  SPORTS_WEAR: 15,       // O
+  FRIDAY_WEAR: 16,       // P
+
+  OTHER_PAYMENT: 17,     // Q
+  OTHER_PAYMENT_TOTAL: 18, // R
+
+  REMARK_1: 19,          // S
+
+  PRESENT_TERM_SCHOOL_FEES_TOTAL: 20, // T
+
+  USES_BUS: 21,          // U
+  BUS_FEE: 22,           // V - per pupil/student
+  BUS_FAMILY_TOTAL: 23,  // W
+
+  INDIVIDUAL_CURRENT_TERM_TOTAL: 24, // X
+  FAMILY_CURRENT_TERM_TOTAL: 25,     // Y
+
+  INDIVIDUAL_BROUGHT_FORWARD: 26,   // Z
+  FAMILY_BROUGHT_FORWARD: 27,       // AA
+
+  REMARK_2: 28,          // AB
+
+  INDIVIDUAL_TOTAL_DUE: 29, // AC
+  FAMILY_TOTAL_DUE: 30       // AD
+
+},
 
 
   // -------------------------
@@ -255,12 +255,17 @@ function onOpen() {
     .addItem(
       '7. Family Payment History',
       'showFamilyPaymentHistory'
-      )
+    )
     .addItem(
-      '8. Refresh Payment Balances',
+      '8. Item Payment Report',
+      'showItemPaymentReport'
+    )
+    .addItem(
+      '9. Refresh Payment Balances',
       'refreshAllBalances'
     )
-    .addToUi();
+
+.addToUi();
 
 }
 
@@ -533,16 +538,20 @@ function createAllocationEntrySheet() {
   const ss =
     SpreadsheetApp.getActiveSpreadsheet();
 
+
   let sheet =
     ss.getSheetByName(
       CONFIG.ALLOCATION_ENTRY_SHEET
     );
 
+
   if (!sheet) {
+
     sheet =
       ss.insertSheet(
         CONFIG.ALLOCATION_ENTRY_SHEET
       );
+
   }
 
 
@@ -551,47 +560,75 @@ function createAllocationEntrySheet() {
 
   sheet
     .getRange('A1')
-    .setValue('PAYMENT ALLOCATION')
+    .setValue(
+      'PAYMENT ALLOCATION'
+    )
     .setFontWeight('bold')
     .setFontSize(14);
 
 
-  sheet.getRange('A3')
+  sheet
+    .getRange('A3')
     .setValue('Payment ID');
 
-  sheet.getRange('A4')
+
+  sheet
+    .getRange('A4')
     .setValue('Payment Date');
 
-  sheet.getRange('A5')
+
+  sheet
+    .getRange('A5')
     .setValue('Parent No');
 
-  sheet.getRange('A6')
+
+  sheet
+    .getRange('A6')
     .setValue('Family ID');
 
-  sheet.getRange('A7')
+
+  sheet
+    .getRange('A7')
     .setValue('Parent / Payee');
 
-  sheet.getRange('A8')
+
+  sheet
+    .getRange('A8')
     .setValue('Amount Received');
 
-  sheet.getRange('A9')
+
+  sheet
+    .getRange('A9')
     .setValue('Already Allocated');
 
-  sheet.getRange('A10')
+
+  sheet
+    .getRange('A10')
     .setValue('Remaining To Allocate');
 
 
   const headers = [[
 
     'Student No',
+
     'Student Name',
+
     'Class',
+
     'Amount Due',
+
     'Category',
+
+    'Category Amount Due',
+
     'Category Amount Paid',
+
     'Payment Type',
+
     'Amount To Allocate',
+
     'Remarks',
+
     'Student ID'
 
   ]];
@@ -961,12 +998,15 @@ function formatAllocationEntrySheet() {
       'Amount Due'
     );
 
+  const categoryAmountDueCol =
+    getEntryColumn(
+      'Category Amount Due'
+    );
 
- const categoryAvailableCol =
-  getEntryColumn(
-    'Category Amount Paid'
-  );
-
+  const categoryAmountPaidCol =
+    getEntryColumn(
+      'Category Amount Paid'
+    );
 
   const amountToAllocateCol =
     getEntryColumn(
@@ -989,60 +1029,37 @@ function formatAllocationEntrySheet() {
     );
 
 
-  /************************************************************
-   * CURRENCY FORMATTING
-   ************************************************************/
+/************************************************************
+ * CURRENCY FORMATTING
+ ************************************************************/
 
-  const currencyFormat =
-    '₦#,##0.00';
-
-
-  if (amountDueCol) {
-
-    sheet
-      .getRange(
-        dataStartRow,
-        amountDueCol,
-        dataRows,
-        1
-      )
-      .setNumberFormat(
-        currencyFormat
-      );
-
-  }
+const currencyFormat =
+  '₦#,##0.00';
 
 
-  if (categoryAvailableCol) {
+[
+  amountDueCol,
+  categoryAmountDueCol,
+  categoryAmountPaidCol,
+  amountToAllocateCol
+]
+  .filter(Boolean)
+  .forEach(
+    col => {
 
-    sheet
-      .getRange(
-        dataStartRow,
-        categoryAvailableCol,
-        dataRows,
-        1
-      )
-      .setNumberFormat(
-        currencyFormat
-      );
+      sheet
+        .getRange(
+          dataStartRow,
+          col,
+          dataRows,
+          1
+        )
+        .setNumberFormat(
+          currencyFormat
+        );
 
-  }
-
-
-  if (amountToAllocateCol) {
-
-    sheet
-      .getRange(
-        dataStartRow,
-        amountToAllocateCol,
-        dataRows,
-        1
-      )
-      .setNumberFormat(
-        currencyFormat
-      );
-
-  }
+    }
+  );
 
 
   /************************************************************
@@ -1200,6 +1217,8 @@ function getAllocatedTotalForPayment(
   return total;
 
 }
+
+
 
 /************************************************************
  * SYNC STUDENT NUMBERS
@@ -1767,7 +1786,868 @@ function createPaymentBaseline() {
   baselineSheet.hideSheet();
 }
 
+/************************************************************
+ * UPDATE STUDENT MASTER PAYMENTS
+ *
+ * Uses permanent Student ID as the automation key.
+ *
+ * Amount Paid =
+ * Opening Amount Paid from baseline
+ * + EXPECTED allocations
+ *
+ * ADDITIONAL PURCHASE allocations are deliberately excluded
+ * because they are not part of the student's expected fees.
+ *
+ * Reversals work automatically because reversal allocation
+ * amounts are negative.
+ ************************************************************/
 
+function updateStudentMasterPayments() {
+
+  const financeSS =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+
+  /************************************************************
+   * GET / CREATE PAYMENT BASELINE
+   ************************************************************/
+
+  let baselineSheet =
+    financeSS.getSheetByName(
+      CONFIG.BASELINE_SHEET
+    );
+
+
+  if (
+    !baselineSheet ||
+    baselineSheet.getLastRow() < 2
+  ) {
+
+    createPaymentBaseline();
+
+
+    baselineSheet =
+      financeSS.getSheetByName(
+        CONFIG.BASELINE_SHEET
+      );
+
+  }
+
+
+  /************************************************************
+   * GET ALLOCATION LOG
+   ************************************************************/
+
+  const allocationSheet =
+    financeSS.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+
+  if (!allocationSheet) {
+
+    throw new Error(
+      'Payment_Allocation sheet was not found.'
+    );
+
+  }
+
+
+  /************************************************************
+   * READ OPENING PAYMENT BASELINE
+   ************************************************************/
+
+  const baselineData =
+    baselineSheet
+      .getDataRange()
+      .getValues();
+
+
+  const openingPaid = {};
+
+
+  const baselineStudentIdCol =
+    findHeaderColumn(
+      baselineSheet,
+      'Student ID'
+    );
+
+
+  const baselineOpeningCol =
+    findHeaderColumn(
+      baselineSheet,
+      'Opening Amount Paid'
+    );
+
+
+  if (
+    !baselineStudentIdCol ||
+    !baselineOpeningCol
+  ) {
+
+    throw new Error(
+      'The payment baseline has not yet been migrated to permanent Student IDs. Run Initial Setup once.'
+    );
+
+  }
+
+
+  for (
+    let i = 1;
+    i < baselineData.length;
+    i++
+  ) {
+
+    const studentId =
+      normalizeId(
+        baselineData[i]
+          [baselineStudentIdCol - 1]
+      );
+
+
+    if (!studentId) {
+      continue;
+    }
+
+
+    openingPaid[studentId] =
+      money(
+        baselineData[i]
+          [baselineOpeningCol - 1]
+      );
+
+  }
+
+
+  /************************************************************
+   * READ EXPECTED ALLOCATIONS
+   ************************************************************/
+
+  const allocatedPaid = {};
+
+
+  if (
+    allocationSheet.getLastRow() >= 2
+  ) {
+
+    const allocationData =
+      allocationSheet
+        .getDataRange()
+        .getValues();
+
+
+    const allocationStudentIdCol =
+      findHeaderColumn(
+        allocationSheet,
+        'Student ID'
+      );
+
+
+    const allocationAmountCol =
+      findHeaderColumn(
+        allocationSheet,
+        'Amount'
+      );
+
+
+    const allocationPaymentTypeCol =
+      findHeaderColumn(
+        allocationSheet,
+        'Payment Type'
+      );
+
+
+    if (
+      !allocationStudentIdCol ||
+      !allocationAmountCol
+    ) {
+
+      throw new Error(
+        'Payment_Allocation must contain Student ID and Amount columns.'
+      );
+
+    }
+
+
+    for (
+      let i = 1;
+      i < allocationData.length;
+      i++
+    ) {
+
+      const studentId =
+        normalizeId(
+          allocationData[i]
+            [allocationStudentIdCol - 1]
+        );
+
+
+      if (!studentId) {
+        continue;
+      }
+
+
+      /*
+       * Old allocations created before Payment Type
+       * was introduced are treated as EXPECTED.
+       */
+
+      const paymentType =
+        allocationPaymentTypeCol
+          ? String(
+              allocationData[i]
+                [allocationPaymentTypeCol - 1] ||
+              'EXPECTED'
+            )
+              .trim()
+              .toUpperCase()
+          : 'EXPECTED';
+
+
+      /*
+       * Additional purchases must NOT reduce
+       * the student's expected school balance.
+       */
+
+      if (
+        paymentType ===
+        'ADDITIONAL PURCHASE'
+      ) {
+        continue;
+      }
+
+
+      const amount =
+        money(
+          allocationData[i]
+            [allocationAmountCol - 1]
+        );
+
+
+      allocatedPaid[studentId] =
+        (
+          allocatedPaid[studentId] ||
+          0
+        ) + amount;
+
+    }
+
+  }
+
+
+  /************************************************************
+   * GET STUDENT MASTER
+   ************************************************************/
+
+  const studentSS =
+    getStudentWorkbook();
+
+
+  const studentSheet =
+    studentSS.getSheetByName(
+      CONFIG.STUDENT_MASTER_SHEET
+    );
+
+
+  if (!studentSheet) {
+
+    throw new Error(
+      'Student Master sheet was not found.'
+    );
+
+  }
+
+
+  const studentData =
+    studentSheet
+      .getDataRange()
+      .getValues();
+
+
+  const studentIdCol =
+    findHeaderColumn(
+      studentSheet,
+      'Student ID'
+    );
+
+
+  if (!studentIdCol) {
+
+    throw new Error(
+      'Student ID column was not found on Student Master.'
+    );
+
+  }
+
+
+  /************************************************************
+   * UPDATE STUDENT MASTER
+   *
+   * Student Master starts on row 2.
+   ************************************************************/
+
+  for (
+    let i = 1;
+    i < studentData.length;
+    i++
+  ) {
+
+    const studentId =
+      normalizeId(
+        studentData[i]
+          [studentIdCol - 1]
+      );
+
+
+    if (!studentId) {
+      continue;
+    }
+
+
+    const amountPaid =
+      (
+        openingPaid[studentId] ||
+        0
+      ) +
+      (
+        allocatedPaid[studentId] ||
+        0
+      );
+
+
+    const sheetRow =
+      i + 1;
+
+
+    studentSheet
+      .getRange(
+        sheetRow,
+        CONFIG.STUDENT.AMOUNT_PAID
+      )
+      .setValue(
+        amountPaid
+      );
+
+
+    /*
+     * Amount Owing =
+     * Total Amount Due - Amount Paid
+     */
+
+    const totalDue =
+      money(
+        studentSheet
+          .getRange(
+            sheetRow,
+            CONFIG.STUDENT.TOTAL
+          )
+          .getValue()
+      );
+
+
+    const amountOwing =
+      totalDue -
+      amountPaid;
+
+
+    studentSheet
+      .getRange(
+        sheetRow,
+        CONFIG.STUDENT.AMOUNT_OWING
+      )
+      .setValue(
+        amountOwing
+      );
+
+  }
+
+}
+
+/************************************************************
+ * UPDATE SELECTED STUDENT MASTER PAYMENTS
+ *
+ * Fast version used after posting or reversing
+ * allocations.
+ *
+ * Only the supplied permanent Student IDs are updated.
+ *
+ * EXPECTED allocations reduce the student's balance.
+ * ADDITIONAL PURCHASE allocations do not.
+ *
+ * Reversal amounts are negative and therefore
+ * automatically reduce Amount Paid.
+ ************************************************************/
+
+function updateSelectedStudentMasterPayments(
+  studentIds
+) {
+
+  const financeSS =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+
+  /************************************************************
+   * CLEAN AND VALIDATE STUDENT IDS
+   ************************************************************/
+
+  const targetStudentIds =
+    [
+      ...new Set(
+        (studentIds || [])
+          .map(
+            studentId =>
+              normalizeId(
+                studentId
+              )
+          )
+          .filter(Boolean)
+      )
+    ];
+
+
+  /*
+   * Nothing to update.
+   */
+
+  if (
+    !targetStudentIds.length
+  ) {
+
+    return;
+
+  }
+
+
+  const targetLookup = {};
+
+
+  targetStudentIds.forEach(
+    studentId => {
+
+      targetLookup[studentId] =
+        true;
+
+    }
+  );
+
+
+  /************************************************************
+   * GET / CREATE PAYMENT BASELINE
+   ************************************************************/
+
+  let baselineSheet =
+    financeSS.getSheetByName(
+      CONFIG.BASELINE_SHEET
+    );
+
+
+  if (
+    !baselineSheet ||
+    baselineSheet.getLastRow() < 2
+  ) {
+
+    createPaymentBaseline();
+
+
+    baselineSheet =
+      financeSS.getSheetByName(
+        CONFIG.BASELINE_SHEET
+      );
+
+  }
+
+
+  /************************************************************
+   * GET ALLOCATION LOG
+   ************************************************************/
+
+  const allocationSheet =
+    financeSS.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+
+  if (!allocationSheet) {
+
+    throw new Error(
+      'Payment_Allocation sheet was not found.'
+    );
+
+  }
+
+
+  /************************************************************
+   * READ OPENING PAYMENT BASELINE
+   ************************************************************/
+
+  const baselineData =
+    baselineSheet
+      .getDataRange()
+      .getValues();
+
+
+  const baselineStudentIdCol =
+    findHeaderColumn(
+      baselineSheet,
+      'Student ID'
+    );
+
+
+  const baselineOpeningCol =
+    findHeaderColumn(
+      baselineSheet,
+      'Opening Amount Paid'
+    );
+
+
+  if (
+    !baselineStudentIdCol ||
+    !baselineOpeningCol
+  ) {
+
+    throw new Error(
+      'The payment baseline has not yet been migrated to permanent Student IDs. Run Initial Setup once.'
+    );
+
+  }
+
+
+  const openingPaid = {};
+
+
+  targetStudentIds.forEach(
+    studentId => {
+
+      openingPaid[studentId] =
+        0;
+
+    }
+  );
+
+
+  for (
+    let i = 1;
+    i < baselineData.length;
+    i++
+  ) {
+
+    const studentId =
+      normalizeId(
+        baselineData[i]
+          [baselineStudentIdCol - 1]
+      );
+
+
+    if (
+      !studentId ||
+      !targetLookup[studentId]
+    ) {
+
+      continue;
+
+    }
+
+
+    openingPaid[studentId] =
+      money(
+        baselineData[i]
+          [baselineOpeningCol - 1]
+      );
+
+  }
+
+
+  /************************************************************
+   * READ EXPECTED ALLOCATIONS
+   ************************************************************/
+
+  const allocatedPaid = {};
+
+
+  targetStudentIds.forEach(
+    studentId => {
+
+      allocatedPaid[studentId] =
+        0;
+
+    }
+  );
+
+
+  if (
+    allocationSheet.getLastRow() >= 2
+  ) {
+
+    const allocationData =
+      allocationSheet
+        .getDataRange()
+        .getValues();
+
+
+    const allocationStudentIdCol =
+      findHeaderColumn(
+        allocationSheet,
+        'Student ID'
+      );
+
+
+    const allocationAmountCol =
+      findHeaderColumn(
+        allocationSheet,
+        'Amount'
+      );
+
+
+    const allocationPaymentTypeCol =
+      findHeaderColumn(
+        allocationSheet,
+        'Payment Type'
+      );
+
+
+    if (
+      !allocationStudentIdCol ||
+      !allocationAmountCol
+    ) {
+
+      throw new Error(
+        'Payment_Allocation must contain Student ID and Amount columns.'
+      );
+
+    }
+
+
+    for (
+      let i = 1;
+      i < allocationData.length;
+      i++
+    ) {
+
+      const studentId =
+        normalizeId(
+          allocationData[i]
+            [allocationStudentIdCol - 1]
+        );
+
+
+      /*
+       * Ignore every student except the
+       * students involved in this transaction.
+       */
+
+      if (
+        !studentId ||
+        !targetLookup[studentId]
+      ) {
+
+        continue;
+
+      }
+
+
+      /*
+       * Old allocations created before Payment Type
+       * was introduced are treated as EXPECTED.
+       */
+
+      const paymentType =
+        allocationPaymentTypeCol
+          ? String(
+              allocationData[i]
+                [allocationPaymentTypeCol - 1] ||
+              'EXPECTED'
+            )
+              .trim()
+              .toUpperCase()
+          : 'EXPECTED';
+
+
+      /*
+       * Additional purchases must NOT reduce
+       * expected Student Master balances.
+       */
+
+      if (
+        paymentType ===
+        'ADDITIONAL PURCHASE'
+      ) {
+
+        continue;
+
+      }
+
+
+      const amount =
+        money(
+          allocationData[i]
+            [allocationAmountCol - 1]
+        );
+
+
+      allocatedPaid[studentId] =
+        (
+          allocatedPaid[studentId] ||
+          0
+        ) + amount;
+
+    }
+
+  }
+
+
+  /************************************************************
+   * GET STUDENT MASTER
+   ************************************************************/
+
+  const studentSS =
+    getStudentWorkbook();
+
+
+  const studentSheet =
+    studentSS.getSheetByName(
+      CONFIG.STUDENT_MASTER_SHEET
+    );
+
+
+  if (!studentSheet) {
+
+    throw new Error(
+      'Student Master sheet was not found.'
+    );
+
+  }
+
+
+  const studentData =
+    studentSheet
+      .getDataRange()
+      .getValues();
+
+
+  const studentIdCol =
+    findHeaderColumn(
+      studentSheet,
+      'Student ID'
+    );
+
+
+  if (!studentIdCol) {
+
+    throw new Error(
+      'Student ID column was not found on Student Master.'
+    );
+
+  }
+
+
+  /************************************************************
+   * FIND ONLY THE STUDENTS WE NEED
+   ************************************************************/
+
+  const studentRows = {};
+
+
+  for (
+    let i = 1;
+    i < studentData.length;
+    i++
+  ) {
+
+    const studentId =
+      normalizeId(
+        studentData[i]
+          [studentIdCol - 1]
+      );
+
+
+    if (
+      !studentId ||
+      !targetLookup[studentId]
+    ) {
+
+      continue;
+
+    }
+
+
+    studentRows[studentId] = {
+
+      sheetRow:
+        i + 1,
+
+      totalDue:
+        money(
+          studentData[i]
+            [CONFIG.STUDENT.TOTAL - 1]
+        )
+
+    };
+
+  }
+
+
+  /************************************************************
+   * UPDATE ONLY THE AFFECTED STUDENTS
+   ************************************************************/
+
+  targetStudentIds.forEach(
+    studentId => {
+
+      const student =
+        studentRows[
+          studentId
+        ];
+
+
+      if (!student) {
+
+        throw new Error(
+          'Student ID was not found on Student Master: ' +
+          studentId
+        );
+
+      }
+
+
+      const amountPaid =
+        (
+          openingPaid[studentId] ||
+          0
+        ) +
+        (
+          allocatedPaid[studentId] ||
+          0
+        );
+
+
+      const amountOwing =
+        student.totalDue -
+        amountPaid;
+
+
+      studentSheet
+        .getRange(
+          student.sheetRow,
+          CONFIG.STUDENT.AMOUNT_PAID
+        )
+        .setValue(
+          amountPaid
+        );
+
+
+      studentSheet
+        .getRange(
+          student.sheetRow,
+          CONFIG.STUDENT.AMOUNT_OWING
+        )
+        .setValue(
+          amountOwing
+        );
+
+    }
+  );
+
+}
 
 /************************************************************
  * MIGRATE LEGACY HISTORY TO PERMANENT IDS
@@ -2027,37 +2907,204 @@ function getExistingAllocations(
  * once at the start of a family block.
  ************************************************************/
 
-function getChildrenForParent(familyId) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName(CONFIG.PARENT_STUDENT_SHEET);
-  const data = sheet.getDataRange().getValues();
-  const target = normalizeId(familyId);
-  const children = [];
-  const seenStudents = new Set();
-  let currentFamilyId = '';
-  let currentParentName = '';
-  let currentParentNo = '';
+function getChildrenForParent(
+  familyId
+) {
 
-  for (let i = 3; i < data.length; i++) {
-    const rawFamilyId = data[i][CONFIG.PARENT.FAMILY_ID - 1];
-    const rawParentName = data[i][CONFIG.PARENT.PARENT_NAME - 1];
-    const rawParentNo = data[i][CONFIG.PARENT.PARENT_NO - 1];
-    if (rawFamilyId) currentFamilyId = rawFamilyId;
-    if (rawParentName) currentParentName = rawParentName;
-    if (rawParentNo) currentParentNo = rawParentNo;
-    if (normalizeId(currentFamilyId) !== target) continue;
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
 
-    const studentId = normalizeId(data[i][CONFIG.PARENT.STUDENT_ID - 1]);
-    const studentNo = data[i][CONFIG.PARENT.STUDENT_NO - 1];
-    const studentName = data[i][CONFIG.PARENT.STUDENT_NAME - 1];
-    const studentClass = data[i][CONFIG.PARENT.STUDENT_CLASS - 1];
-    const amountDue = money(data[i][CONFIG.PARENT.INDIVIDUAL_TOTAL_DUE - 1]);
-    if (!studentId || !studentName || !studentClass) continue;
-    if (seenStudents.has(studentId)) continue;
-    seenStudents.add(studentId);
-    children.push({ studentId, studentNo, studentName, studentClass, amountDue, parentName: currentParentName, parentNo: currentParentNo });
+
+  const sheet =
+    ss.getSheetByName(
+      CONFIG.PARENT_STUDENT_SHEET
+    );
+
+
+  if (!sheet) {
+
+    throw new Error(
+      'Parent/Student Financial Record sheet was not found.'
+    );
+
   }
+
+
+  const data =
+    sheet
+      .getDataRange()
+      .getValues();
+
+
+  const familyIdCol =
+    findHeaderColumnInRows(
+      sheet,
+      'Family ID',
+      1,
+      3
+    );
+
+
+  if (!familyIdCol) {
+
+    throw new Error(
+      'Family ID column was not found on the Parent/Student Financial Record.'
+    );
+
+  }
+
+
+  const children = [];
+
+  let currentFamilyId = '';
+
+
+  /*
+   * Parent Master rows 1-3 are headers.
+   * Actual student records begin on row 4.
+   */
+
+  for (
+    let i = 3;
+    i < data.length;
+    i++
+  ) {
+
+    const rowFamilyId =
+      normalizeId(
+        data[i]
+          [familyIdCol - 1]
+      );
+
+
+    /*
+     * Family ID may only appear on
+     * the first row of a family.
+     */
+
+    if (rowFamilyId) {
+
+      currentFamilyId =
+        rowFamilyId;
+
+    }
+
+
+    if (
+      currentFamilyId !==
+      normalizeId(familyId)
+    ) {
+      continue;
+    }
+
+
+    const studentName =
+      data[i]
+        [CONFIG.PARENT.STUDENT_NAME - 1];
+
+
+    if (
+      !normalize(studentName)
+    ) {
+      continue;
+    }
+
+
+    children.push({
+
+      studentNo:
+        normalizeId(
+          data[i]
+            [CONFIG.PARENT.STUDENT_NO - 1]
+        ),
+
+      studentId:
+        normalizeId(
+          data[i]
+            [CONFIG.PARENT.STUDENT_ID - 1]
+        ),
+
+      studentName:
+        studentName,
+
+      studentClass:
+        data[i]
+          [CONFIG.PARENT.STUDENT_CLASS - 1],
+
+      amountDue:
+        money(
+          data[i]
+            [CONFIG.PARENT.INDIVIDUAL_TOTAL_DUE - 1]
+        ),
+
+
+      /*
+       * CATEGORY-SPECIFIC EXPECTED CHARGES
+       */
+
+      categoryDue: {
+
+        'School Fees':
+          money(
+            data[i]
+              [CONFIG.PARENT.SCHOOL_FEE - 1]
+          ),
+       'Outstanding School Fees':
+          money(
+            data[i]
+              [CONFIG.PARENT.INDIVIDUAL_BROUGHT_FORWARD - 1]
+          ),
+        'Lesson':
+          money(
+            data[i]
+              [CONFIG.PARENT.LESSON - 1]
+          ),
+
+        'Textbooks':
+          money(
+            data[i]
+              [CONFIG.PARENT.TEXTBOOKS - 1]
+          ),
+
+        'School Uniforms':
+          money(
+            data[i]
+              [CONFIG.PARENT.SCHOOL_UNIFORMS - 1]
+          ),
+
+        'Sports Wear':
+          money(
+            data[i]
+              [CONFIG.PARENT.SPORTS_WEAR - 1]
+          ),
+
+        'Friday Wear':
+          money(
+            data[i]
+              [CONFIG.PARENT.FRIDAY_WEAR - 1]
+          ),
+
+        'New Student Registration Fees':
+          money(
+            data[i]
+              [CONFIG.PARENT.OTHER_PAYMENT - 1]
+          ),
+
+        'Bus Fees':
+          money(
+            data[i]
+              [CONFIG.PARENT.BUS_FEE - 1]
+          )
+
+      }
+
+    });
+
+  }
+
+
   return children;
+
 }
 
 
@@ -2389,15 +3436,14 @@ function prepareSelectedPayment() {
 
   if (lastRow >= 13) {
 
-    entrySheet
-      .getRange(
-        13,
-        1,
-        lastRow - 12,
-        10
-      )
-      .clearContent();
-
+      entrySheet
+    .getRange(
+      13,
+      1,
+      lastRow - 12,
+      11
+    )
+    .clearContent();
   }
 
 
@@ -2452,56 +3498,148 @@ function prepareSelectedPayment() {
    * optional/replacement purchase.
    */
 
+
   const rows = [];
 
 
-  children.forEach(
-    child => {
+      /*
+      * Read all previous EXPECTED allocations once.
+      */
 
-      categoryRows.forEach(
-        category => {
+      const expectedPaidLookup =
+        getExpectedPaidByStudentCategory();
 
-          rows.push([
 
-            child.studentNo,
+      children.forEach(
+        child => {
 
-            child.studentName,
+          categoryRows.forEach(
+            category => {
 
-            child.studentClass,
 
-            child.amountDue,
+            /*
+      * Original expected amount for THIS
+      * student and THIS category.
+      */
 
-            category.name,
+      const originalCategoryDue =
+        money(
+          child.categoryDue[
+            category.name
+          ] || 0
+        );
 
-            category.available,
 
-            'EXPECTED',
+      /*
+      * Amount this student has already paid
+      * toward this EXPECTED category across
+      * previous payments.
+      */
 
-            '',
+      const studentId =
+        normalizeId(
+          child.studentId
+        );
 
-            '',
 
-            child.studentId
+      const categoryKey =
+        String(
+          category.name || ''
+        )
+          .trim()
+          .toUpperCase();
 
-          ]);
 
-        }
-      );
+      const previouslyPaid =
+        studentId &&
+        expectedPaidLookup[studentId]
+          ? money(
+              expectedPaidLookup[studentId][categoryKey] ||
+              0
+            )
+          : 0;
 
-    }
-  );
+
+      /*
+      * Category Amount Due now means:
+      *
+      * Original Expected Amount
+      * minus
+      * Previous EXPECTED Payments
+      */
+
+      let categoryAmountDue =
+        originalCategoryDue -
+        previouslyPaid;
+
+
+      /*
+      * Avoid tiny negative balances.
+      */
+
+      if (
+        Math.abs(categoryAmountDue) <=
+        CONFIG.TOLERANCE
+      ) {
+
+        categoryAmountDue = 0;
+
+      }
+
+
+      if (
+        categoryAmountDue < 0
+      ) {
+
+        categoryAmountDue = 0;
+
+      }
+
+
+        rows.push([
+
+          child.studentNo,
+
+          child.studentName,
+
+          child.studentClass,
+
+          child.amountDue,
+
+          category.name,
+
+          categoryAmountDue,
+
+          category.available,
+
+          'EXPECTED',
+
+          '',
+
+          '',
+
+          child.studentId
+
+        ]);
+
+      }
+    );
+
+  }
+);
+
 
 
   if (rows.length) {
 
-    entrySheet
-      .getRange(
-        13,
-        1,
-        rows.length,
-        10
-      )
-      .setValues(rows);
+      entrySheet
+    .getRange(
+      13,
+      1,
+      rows.length,
+      11
+    )
+    .setValues(rows);
 
 
     /*
@@ -2525,7 +3663,7 @@ function prepareSelectedPayment() {
     entrySheet
       .getRange(
         13,
-        7,
+        8,
         rows.length,
         1
       )
@@ -2543,360 +3681,718 @@ function prepareSelectedPayment() {
 
 }
 
+/************************************************************
+ * GET EXPECTED PAYMENTS BY STUDENT AND CATEGORY
+ *
+ * Reads Payment_Allocation ONCE and returns:
+ *
+ * Student ID -> Category -> Net EXPECTED Amount Paid
+ *
+ * ADDITIONAL PURCHASE is ignored.
+ * Reversals automatically reduce the amount because
+ * reversal entries contain negative amounts.
+ ************************************************************/
 
+function getExpectedPaidByStudentCategory() {
+
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+
+  const allocationSheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+
+  const paidLookup = {};
+
+
+  if (
+    !allocationSheet ||
+    allocationSheet.getLastRow() < 2
+  ) {
+
+    return paidLookup;
+
+  }
+
+
+  const data =
+    allocationSheet
+      .getDataRange()
+      .getValues();
+
+
+  const studentIdCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Student ID'
+    );
+
+
+  const categoryCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Category'
+    );
+
+
+  const amountCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Amount'
+    );
+
+
+  const paymentTypeCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Payment Type'
+    );
+
+
+  if (
+    !studentIdCol ||
+    !categoryCol ||
+    !amountCol
+  ) {
+
+    throw new Error(
+      'Payment_Allocation must contain Student ID, Category and Amount columns.'
+    );
+
+  }
+
+
+  for (
+    let i = 1;
+    i < data.length;
+    i++
+  ) {
+
+    const studentId =
+      normalizeId(
+        data[i][studentIdCol - 1]
+      );
+
+
+    const category =
+      String(
+        data[i][categoryCol - 1] || ''
+      )
+        .trim()
+        .toUpperCase();
+
+
+    if (
+      !studentId ||
+      !category
+    ) {
+
+      continue;
+
+    }
+
+
+    /*
+     * Old transactions created before
+     * Payment Type existed are EXPECTED.
+     */
+
+    const paymentType =
+      paymentTypeCol
+        ? String(
+            data[i][paymentTypeCol - 1] ||
+            'EXPECTED'
+          )
+            .trim()
+            .toUpperCase()
+        : 'EXPECTED';
+
+
+    /*
+     * Replacement / optional purchases
+     * must NOT reduce expected balance.
+     */
+
+    if (
+      paymentType ===
+      'ADDITIONAL PURCHASE'
+    ) {
+
+      continue;
+
+    }
+
+
+    const amount =
+      money(
+        data[i][amountCol - 1]
+      );
+
+
+    if (
+      !paidLookup[studentId]
+    ) {
+
+      paidLookup[studentId] = {};
+
+    }
+
+
+    paidLookup[studentId][category] =
+      (
+        paidLookup[studentId][category] ||
+        0
+      ) + amount;
+
+  }
+
+
+  return paidLookup;
+
+}
 
 /************************************************************
  * POST ALLOCATION
  *
  * Reads Allocation_Entry and permanently logs
  * the records into Payment_Allocation.
+ *
+ * PROTECTIONS:
+ *
+ * 1. Re-checks the actual amount already allocated directly
+ *    from Payment_Allocation immediately before posting.
+ *
+ * 2. Prevents allocation above the payment amount.
+ *
+ * 3. Uses LockService to prevent two simultaneous executions
+ *    from posting the same allocation twice.
  ************************************************************/
 
 function postAllocation() {
 
-  const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
+  const lock =
+    LockService.getDocumentLock();
 
 
-  const entrySheet =
-    ss.getSheetByName(
-      CONFIG.ALLOCATION_ENTRY_SHEET
+  /*
+   * Wait up to 10 seconds for another
+   * posting process to finish.
+   */
+
+  try {
+
+    lock.waitLock(10000);
+
+  } catch (error) {
+
+    throw new Error(
+      'Another allocation is currently being posted.\n\n' +
+      'Please wait a few seconds and try again.'
     );
 
-
-  const logSheet =
-    ss.getSheetByName(
-      CONFIG.ALLOCATION_LOG_SHEET
-    );
+  }
 
 
-  const inflowSheet =
-    ss.getSheetByName(
-      CONFIG.INFLOW_SHEET
-    );
+  try {
+
+    const ss =
+      SpreadsheetApp.getActiveSpreadsheet();
 
 
-  const paymentId =
-    entrySheet
-      .getRange('B3')
-      .getDisplayValue()
-      .trim();
+    const entrySheet =
+      ss.getSheetByName(
+        CONFIG.ALLOCATION_ENTRY_SHEET
+      );
 
 
-  const paymentDate =
-    entrySheet
-      .getRange('B4')
-      .getValue();
+    const logSheet =
+      ss.getSheetByName(
+        CONFIG.ALLOCATION_LOG_SHEET
+      );
 
 
-  const parentNo =
-    entrySheet
-      .getRange('B5')
-      .getDisplayValue();
+    const inflowSheet =
+      ss.getSheetByName(
+        CONFIG.INFLOW_SHEET
+      );
 
 
-  const familyId =
-    normalizeId(
+    if (!entrySheet) {
+
+      throw new Error(
+        'Allocation_Entry sheet was not found.'
+      );
+
+    }
+
+
+    if (!logSheet) {
+
+      throw new Error(
+        'Payment_Allocation sheet was not found.'
+      );
+
+    }
+
+
+    if (!inflowSheet) {
+
+      throw new Error(
+        'Daily Inflow sheet was not found.'
+      );
+
+    }
+
+
+    /************************************************************
+     * READ PAYMENT INFORMATION
+     ************************************************************/
+
+    const paymentId =
       entrySheet
-        .getRange('B6')
+        .getRange('B3')
         .getDisplayValue()
-    );
+        .trim();
 
 
-  const payee =
-    entrySheet
-      .getRange('B7')
-      .getDisplayValue();
-
-
-  const remainingBefore =
-    money(
+    const paymentDate =
       entrySheet
-        .getRange('B10')
-        .getValue()
-    );
+        .getRange('B4')
+        .getValue();
 
 
-  if (!paymentId) {
+    const parentNo =
+      entrySheet
+        .getRange('B5')
+        .getDisplayValue();
 
-    throw new Error(
-      'No payment is currently loaded in Allocation_Entry.'
-    );
 
-  }
+    const familyId =
+      normalizeId(
+        entrySheet
+          .getRange('B6')
+          .getDisplayValue()
+      );
 
 
-  if (!familyId) {
+    const payee =
+      entrySheet
+        .getRange('B7')
+        .getDisplayValue();
 
-    throw new Error(
-      'This payment has no permanent Family ID.'
-    );
 
-  }
+    const amountReceived =
+      money(
+        entrySheet
+          .getRange('B8')
+          .getValue()
+      );
 
 
-  if (
-    remainingBefore <=
-    CONFIG.TOLERANCE
-  ) {
+    if (!paymentId) {
 
-    throw new Error(
-      'This payment is already fully allocated.'
-    );
-
-  }
-
-
-  const lastRow =
-    entrySheet.getLastRow();
-
-
-  if (lastRow < 13) {
-
-    throw new Error(
-      'There are no allocation rows.'
-    );
-
-  }
-
-
-  const data =
-    entrySheet
-      .getRange(
-        13,
-        1,
-        lastRow - 12,
-        10
-      )
-      .getValues();
-
-
-  const allocations = [];
-
-  const categoryTotals = {};
-
-  let allocationTotal = 0;
-
-
-  data.forEach(
-    row => {
-
-      const studentNo =
-        row[0];
-
-
-      const studentName =
-        row[1];
-
-
-      const studentClass =
-        row[2];
-
-
-      const category =
-        row[4];
-
-
-      const categoryAmountPaid =
-        money(
-          row[5]
-        );
-
-
-      const paymentType =
-        String(
-          row[6] ||
-          'EXPECTED'
-        )
-          .trim()
-          .toUpperCase();
-
-
-      const amount =
-        money(
-          row[7]
-        );
-
-
-      const remarks =
-        row[8];
-
-
-      const studentId =
-        normalizeId(
-          row[9]
-        );
-
-
-      if (
-        amount <= 0
-      ) {
-        return;
-      }
-
-
-      if (!studentId) {
-
-        throw new Error(
-          'An allocation amount was entered for ' +
-          studentName +
-          ' but the student has no permanent Student ID.'
-        );
-
-      }
-
-
-      if (
-        paymentType !==
-          'EXPECTED' &&
-        paymentType !==
-          'ADDITIONAL PURCHASE'
-      ) {
-
-        throw new Error(
-          'Invalid Payment Type for ' +
-          studentName +
-          '. Use EXPECTED or ADDITIONAL PURCHASE.'
-        );
-
-      }
-
-
-      if (
-        amount >
-        categoryAmountPaid +
-          CONFIG.TOLERANCE
-      ) {
-
-        throw new Error(
-          studentName +
-          ' has an allocation greater than the Category Amount Paid for ' +
-          category +
-          '.'
-        );
-
-      }
-
-
-      allocations.push({
-
-        studentId:
-          studentId,
-
-        studentNo:
-          studentNo,
-
-        studentName:
-          studentName,
-
-        studentClass:
-          studentClass,
-
-        category:
-          category,
-
-        paymentType:
-          paymentType,
-
-        amount:
-          amount,
-
-        remarks:
-          remarks
-
-      });
-
-
-      allocationTotal +=
-        amount;
-
-
-      categoryTotals[category] =
-        (
-          categoryTotals[category] ||
-          0
-        ) + amount;
+      throw new Error(
+        'No payment is currently loaded in Allocation_Entry.'
+      );
 
     }
-  );
 
 
-  if (!allocations.length) {
+    if (!familyId) {
 
-    throw new Error(
-      'Enter at least one allocation amount.'
-    );
+      throw new Error(
+        'This payment has no permanent Family ID.'
+      );
 
-  }
+    }
 
 
-  if (
-    allocationTotal >
-    remainingBefore +
+    if (
+      amountReceived <= 0
+    ) {
+
+      throw new Error(
+        'The payment does not contain a valid Amount Received.'
+      );
+
+    }
+
+
+    /************************************************************
+     * RE-CHECK ACTUAL ALLOCATION FROM PERMANENT LEDGER
+     *
+     * Do NOT trust B9 or B10 as the final authority.
+     * Payment_Allocation is the permanent source of truth.
+     ************************************************************/
+
+    const alreadyAllocatedNow =
+      getAllocatedTotalForPayment(
+        paymentId
+      );
+
+
+    const actualRemaining =
+      amountReceived -
+      alreadyAllocatedNow;
+
+
+    /*
+     * If the payment has already been fully
+     * allocated, stop immediately.
+     */
+
+    if (
+      actualRemaining <=
       CONFIG.TOLERANCE
-  ) {
+    ) {
 
-    throw new Error(
-      'You are attempting to allocate ₦' +
-      allocationTotal.toLocaleString() +
-      ' but only ₦' +
-      remainingBefore.toLocaleString() +
-      ' remains on this payment.'
-    );
-
-  }
+      updateInflowAllocationStatus();
 
 
-  const availableByCategory = {};
+      throw new Error(
+        'This payment is already fully allocated.\n\n' +
 
+        'Payment ID: ' +
+        paymentId +
+        '\n' +
 
-  data.forEach(
-    row => {
+        'Amount Received: ₦' +
+        amountReceived.toLocaleString() +
+        '\n' +
 
-      const category =
-        row[4];
+        'Already Allocated: ₦' +
+        alreadyAllocatedNow.toLocaleString() +
+        '\n' +
 
+        'Remaining: ₦0\n\n' +
 
-      const available =
-        money(
-          row[5]
-        );
-
-
-      if (
-        category &&
-        available > 0
-      ) {
-
-        availableByCategory[
-          category
-        ] =
-          available;
-
-      }
+        'No additional allocation was posted.'
+      );
 
     }
-  );
 
 
-  Object
-    .keys(
-      categoryTotals
-    )
-    .forEach(
-      category => {
+    /************************************************************
+     * READ ALLOCATION ENTRY ROWS
+     ************************************************************/
+
+    const lastRow =
+      entrySheet.getLastRow();
+
+
+    if (
+      lastRow < 13
+    ) {
+
+      throw new Error(
+        'There are no allocation rows.'
+      );
+
+    }
+
+
+    const data =
+      entrySheet
+        .getRange(
+          13,
+          1,
+          lastRow - 12,
+          11
+        )
+        .getValues();
+
+
+    const allocations = [];
+
+    const categoryTotals = {};
+
+    let allocationTotal = 0;
+
+
+    data.forEach(
+      row => {
+
+        const studentNo =
+          row[0];
+
+
+        const studentName =
+          row[1];
+
+
+        const studentClass =
+          row[2];
+
+
+        const category =
+          row[4];
+
+
+        const categoryAmountDue =
+          money(
+            row[5]
+          );
+
+
+        const categoryAmountPaid =
+          money(
+            row[6]
+          );
+
+
+        const paymentType =
+          String(
+            row[7] ||
+            'EXPECTED'
+          )
+            .trim()
+            .toUpperCase();
+
+
+        const amount =
+          money(
+            row[8]
+          );
+
+
+        const remarks =
+          row[9];
+
+
+        const studentId =
+          normalizeId(
+            row[10]
+          );
+
+
+        /*
+         * Ignore rows where nothing
+         * was allocated.
+         */
 
         if (
-          categoryTotals[category] >
-          availableByCategory[category] +
+          amount <= 0
+        ) {
+          return;
+        }
+
+
+        if (!studentId) {
+
+          throw new Error(
+            'An allocation amount was entered for ' +
+            studentName +
+            ' but the student has no permanent Student ID.'
+          );
+
+        }
+
+
+        if (
+          paymentType !==
+            'EXPECTED' &&
+          paymentType !==
+            'ADDITIONAL PURCHASE'
+        ) {
+
+          throw new Error(
+            'Invalid Payment Type for ' +
+            studentName +
+            '. Use EXPECTED or ADDITIONAL PURCHASE.'
+          );
+
+        }
+
+
+        /*
+         * One student's allocation cannot
+         * exceed the Category Amount Paid.
+         */
+
+        if (
+          amount >
+          categoryAmountPaid +
             CONFIG.TOLERANCE
         ) {
 
           throw new Error(
-            'Total allocation for ' +
+            studentName +
+            ' has an allocation greater than the Category Amount Paid for ' +
             category +
-            ' exceeds the Category Amount Paid.'
+            '.'
           );
+
+        }
+
+      /*
+ * EXPECTED PAYMENT PROTECTION
+ *
+ * An EXPECTED allocation cannot exceed
+ * the student's remaining amount due
+ * for this particular category.
+ *
+ * ADDITIONAL PURCHASE is deliberately
+ * excluded because replacement/optional
+ * purchases are not part of the student's
+ * expected term charges.
+ */
+
+if (
+  paymentType === 'EXPECTED' &&
+  amount >
+    categoryAmountDue +
+      CONFIG.TOLERANCE
+) {
+
+  throw new Error(
+    'Expected allocation exceeds the remaining category balance.\n\n' +
+
+    'Student: ' +
+    studentName +
+    '\n' +
+
+    'Category: ' +
+    category +
+    '\n' +
+
+    'Category Amount Due: ₦' +
+    categoryAmountDue.toLocaleString() +
+    '\n' +
+
+    'Attempting To Allocate: ₦' +
+    amount.toLocaleString() +
+    '\n\n' +
+
+    'You can allocate a maximum of ₦' +
+    categoryAmountDue.toLocaleString() +
+    ' as EXPECTED for this category.\n\n' +
+
+    'If this is a replacement or optional purchase, change Payment Type to ADDITIONAL PURCHASE.'
+  );
+
+}
+
+        allocations.push({
+
+          studentId:
+            studentId,
+
+          studentNo:
+            studentNo,
+
+          studentName:
+            studentName,
+
+          studentClass:
+            studentClass,
+
+          category:
+            category,
+
+          paymentType:
+            paymentType,
+
+          amount:
+            amount,
+
+          remarks:
+            remarks
+
+        });
+
+
+        allocationTotal +=
+          amount;
+
+
+        categoryTotals[category] =
+          (
+            categoryTotals[category] ||
+            0
+          ) + amount;
+
+      }
+    );
+
+
+    if (
+      !allocations.length
+    ) {
+
+      throw new Error(
+        'Enter at least one allocation amount.'
+      );
+
+    }
+
+
+    /************************************************************
+     * PAYMENT-LEVEL OVER-ALLOCATION PROTECTION
+     ************************************************************/
+
+    if (
+      allocationTotal >
+      actualRemaining +
+        CONFIG.TOLERANCE
+    ) {
+
+      throw new Error(
+        'Allocation would exceed the remaining payment balance.\n\n' +
+
+        'Amount Received: ₦' +
+        amountReceived.toLocaleString() +
+        '\n' +
+
+        'Already Allocated: ₦' +
+        alreadyAllocatedNow.toLocaleString() +
+        '\n' +
+
+        'Remaining: ₦' +
+        actualRemaining.toLocaleString() +
+        '\n' +
+
+        'Attempting To Allocate: ₦' +
+        allocationTotal.toLocaleString() +
+        '\n\n' +
+
+        'No allocation was posted.'
+      );
+
+    }
+
+
+    /************************************************************
+     * CATEGORY-LEVEL OVER-ALLOCATION PROTECTION
+     ************************************************************/
+
+    const availableByCategory = {};
+
+
+    data.forEach(
+      row => {
+
+        const category =
+          row[4];
+
+
+        const available =
+          money(
+            row[6]
+          );
+
+
+        if (
+          category &&
+          available > 0
+        ) {
+
+          availableByCategory[
+            category
+          ] =
+            available;
 
         }
 
@@ -2904,166 +4400,406 @@ function postAllocation() {
     );
 
 
-  const paymentIdCol =
-    findHeaderColumn(
-      inflowSheet,
-      'Payment ID'
-    );
+    Object
+      .keys(
+        categoryTotals
+      )
+      .forEach(
+        category => {
+
+          if (
+            categoryTotals[category] >
+            (
+              availableByCategory[category] ||
+              0
+            ) +
+              CONFIG.TOLERANCE
+          ) {
+
+            throw new Error(
+              'Total allocation for ' +
+              category +
+              ' exceeds the Category Amount Paid.\n\n' +
+
+              'Category Amount Paid: ₦' +
+              (
+                availableByCategory[category] ||
+                0
+              ).toLocaleString() +
+              '\n' +
+
+              'Attempting To Allocate: ₦' +
+              categoryTotals[category]
+                .toLocaleString() +
+              '\n\n' +
+
+              'No allocation was posted.'
+            );
+
+          }
+
+        }
+      );
 
 
-  const receiptCol =
-    findHeaderColumn(
-      inflowSheet,
-      'Receipt No'
-    );
+    /************************************************************
+     * FIND RECEIPT NUMBER
+     ************************************************************/
+
+    const paymentIdCol =
+      findHeaderColumn(
+        inflowSheet,
+        'Payment ID'
+      );
 
 
-  let receiptNo = '';
+    const receiptCol =
+      findHeaderColumn(
+        inflowSheet,
+        'Receipt No'
+      );
 
 
-  const inflowData =
-    inflowSheet
-      .getDataRange()
-      .getValues();
+    let receiptNo = '';
 
 
-  for (
-    let i = 1;
-    i < inflowData.length;
-    i++
-  ) {
+    const inflowData =
+      inflowSheet
+        .getDataRange()
+        .getValues();
 
-    if (
-      normalize(
-        inflowData[i]
-          [paymentIdCol - 1]
-      ) ===
-      normalize(paymentId)
+
+    for (
+      let i = 1;
+      i < inflowData.length;
+      i++
     ) {
 
-      receiptNo =
-        inflowData[i]
-          [receiptCol - 1];
+      if (
+        normalize(
+          inflowData[i]
+            [paymentIdCol - 1]
+        ) ===
+        normalize(paymentId)
+      ) {
 
-      break;
+        receiptNo =
+          receiptCol
+            ? inflowData[i]
+                [receiptCol - 1]
+            : '';
+
+        break;
+
+      }
 
     }
 
-  }
+
+    /************************************************************
+     * CREATE PERMANENT ALLOCATION RECORDS
+     ************************************************************/
+
+    const enteredBy =
+      Session
+        .getActiveUser()
+        .getEmail() ||
+      'Unknown User';
 
 
-  const enteredBy =
-    Session
-      .getActiveUser()
-      .getEmail() ||
-    'Unknown User';
+    const logRows =
+      allocations.map(
+        a => [
+
+          'AL-' +
+          Utilities
+            .getUuid()
+            .substring(
+              0,
+              10
+            )
+            .toUpperCase(),
+
+          paymentId,
+
+          paymentDate,
+
+          parentNo,
+
+          payee,
+
+          a.studentNo,
+
+          a.studentName,
+
+          a.studentClass,
+
+          a.category,
+
+          a.amount,
+
+          receiptNo,
+
+          a.remarks,
+
+          enteredBy,
+
+          new Date(),
+
+          familyId,
+
+          a.studentId,
+
+          a.paymentType
+
+        ]
+      );
 
 
-  const logRows =
-    allocations.map(
-      a => [
+    /************************************************************
+     * FINAL SAFETY CHECK
+     *
+     * We are still holding the document lock,
+     * so another postAllocation() cannot slip
+     * another allocation in between our check
+     * and this write.
+     ************************************************************/
 
-        'AL-' +
-        Utilities
-          .getUuid()
-          .substring(
-            0,
-            10
-          )
-          .toUpperCase(),
-
-        paymentId,
-
-        paymentDate,
-
-        parentNo,
-
-        payee,
-
-        a.studentNo,
-
-        a.studentName,
-
-        a.studentClass,
-
-        a.category,
-
-        a.amount,
-
-        receiptNo,
-
-        a.remarks,
-
-        enteredBy,
-
-        new Date(),
-
-        familyId,
-
-        a.studentId,
-
-        a.paymentType
-
-      ]
-    );
+    const finalAllocatedCheck =
+      getAllocatedTotalForPayment(
+        paymentId
+      );
 
 
-  logSheet
-    .getRange(
-      logSheet.getLastRow() + 1,
-      1,
-      logRows.length,
-      17
-    )
-    .setValues(
-      logRows
-    );
+    const finalRemainingCheck =
+      amountReceived -
+      finalAllocatedCheck;
 
 
-  refreshAllBalances();
+    if (
+      allocationTotal >
+      finalRemainingCheck +
+        CONFIG.TOLERANCE
+    ) {
+
+      throw new Error(
+        'The payment balance changed before posting could complete.\n\n' +
+
+        'Current Remaining: ₦' +
+        finalRemainingCheck.toLocaleString() +
+        '\n' +
+
+        'Attempting To Allocate: ₦' +
+        allocationTotal.toLocaleString() +
+        '\n\n' +
+
+        'No allocation was posted. Please prepare the payment again.'
+      );
+
+    }
 
 
-  const paymentRow =
-    findPaymentRow(
+    /************************************************************
+     * WRITE TO PAYMENT_ALLOCATION
+     *
+     * THIS IS THE POINT WHERE THE ALLOCATION
+     * BECOMES PERMANENT.
+     ************************************************************/
+
+    logSheet
+      .getRange(
+        logSheet.getLastRow() + 1,
+        1,
+        logRows.length,
+        17
+      )
+      .setValues(
+        logRows
+      );
+
+
+    /*
+     * Force the permanent ledger write to
+     * complete before balance refresh.
+     */
+
+    SpreadsheetApp.flush();
+
+
+    /************************************************************
+     * FAST TARGETED BALANCE UPDATE
+     *
+     * Instead of refreshing every payment and every student,
+     * update only:
+     *
+     * 1. The Daily Inflow payment just posted.
+     * 2. The students affected by this allocation.
+     ************************************************************/
+
+
+    /*
+    * Get the permanent Student IDs affected
+    * by this posting.
+    *
+    * Set removes duplicates if the same student
+    * received more than one category allocation.
+    */
+
+    const affectedStudentIds =
+      [
+        ...new Set(
+          allocations
+            .map(
+              allocation =>
+                normalizeId(
+                  allocation.studentId
+                )
+            )
+            .filter(Boolean)
+        )
+      ];
+
+
+    /*
+    * Update only this payment's:
+    *
+    * Allocated Amount
+    * Unallocated Amount
+    * Allocation Status
+    */
+
+    updateSingleInflowAllocationStatus(
       paymentId
     );
 
 
-  if (paymentRow) {
+    /*
+    * Update only the students involved
+    * in this allocation.
+    */
 
-    inflowSheet
-      .getRange(
-        paymentRow,
-        1
-      )
-      .activate();
+    updateSelectedStudentMasterPayments(
+      affectedStudentIds
+    );
+
+    /************************************************************
+     * CHECK WHETHER ANY PAYMENT REMAINS
+     ************************************************************/
+
+    const allocatedAfterPosting =
+      getAllocatedTotalForPayment(
+        paymentId
+      );
 
 
-    prepareSelectedPayment();
+    const remainingAfterPosting =
+      amountReceived -
+      allocatedAfterPosting;
+
+
+    /*
+     * If money still remains, reload this
+     * payment so another allocation can be made.
+     *
+     * If fully allocated, do NOT call
+     * prepareSelectedPayment() unnecessarily.
+     */
+
+    if (
+      remainingAfterPosting >
+      CONFIG.TOLERANCE
+    ) {
+
+      const paymentRow =
+        findPaymentRow(
+          paymentId
+        );
+
+
+      if (paymentRow) {
+
+        inflowSheet
+          .getRange(
+            paymentRow,
+            1
+          )
+          .activate();
+
+
+        prepareSelectedPayment();
+
+      }
+
+    } 
+    
+
+
+    /************************************************************
+     * SUCCESS MESSAGE
+     ************************************************************/
+
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        'Allocation posted successfully.\n\n' +
+
+        'Allocated Now: ₦' +
+        allocationTotal.toLocaleString() +
+        '\n' +
+
+        'Total Allocated: ₦' +
+        allocatedAfterPosting.toLocaleString() +
+        '\n' +
+
+        'Remaining: ₦' +
+        Math.max(
+          remainingAfterPosting,
+          0
+        ).toLocaleString()
+      );
+
+
+  } finally {
+
+    /*
+     * ALWAYS release the lock,
+     * including when an error occurs.
+     */
+
+    lock.releaseLock();
 
   }
 
-
-  SpreadsheetApp
-    .getUi()
-    .alert(
-      'Allocation posted successfully.\n\n' +
-      'Allocated now: ₦' +
-      allocationTotal.toLocaleString()
-    );
-
 }
+/************************************************************
+ * UPDATE DAILY INFLOW ALLOCATION STATUS
+ ************************************************************/
 
-function reverseSelectedAllocation() {
+function updateInflowAllocationStatus() {
 
   const ss =
     SpreadsheetApp.getActiveSpreadsheet();
+
+
+  const inflow =
+    ss.getSheetByName(
+      CONFIG.INFLOW_SHEET
+    );
 
 
   const logSheet =
     ss.getSheetByName(
       CONFIG.ALLOCATION_LOG_SHEET
     );
+
+
+  if (!inflow) {
+
+    throw new Error(
+      'Daily Inflow sheet was not found.'
+    );
+
+  }
 
 
   if (!logSheet) {
@@ -3075,387 +4811,514 @@ function reverseSelectedAllocation() {
   }
 
 
-  const activeSheet =
-    ss.getActiveSheet();
+  const allocatedCol =
+    findHeaderColumn(
+      inflow,
+      'Allocated Amount'
+    );
+
+
+  const unallocatedCol =
+    findHeaderColumn(
+      inflow,
+      'Unallocated Amount'
+    );
+
+
+  const statusCol =
+    findHeaderColumn(
+      inflow,
+      'Allocation Status'
+    );
+
+
+  /*
+   * Payment ID -> Total Allocated
+   *
+   * Reversals have negative amounts,
+   * so they automatically reduce the
+   * allocated total.
+   */
+
+  const allocatedLookup = {};
 
 
   if (
-    activeSheet.getName() !==
-    CONFIG.ALLOCATION_LOG_SHEET
+    logSheet.getLastRow() >= 2
   ) {
 
-    SpreadsheetApp
-      .getUi()
-      .alert(
-        'Please open Payment_Allocation and select the allocation you want to reverse.'
+    const allocationData =
+      logSheet
+        .getDataRange()
+        .getValues();
+
+
+    const logPaymentIdCol =
+      findHeaderColumn(
+        logSheet,
+        'Payment ID'
       );
 
-    return;
 
-  }
-
-
-  const selectedRow =
-    activeSheet
-      .getActiveRange()
-      .getRow();
-
-
-  if (
-    selectedRow <= 1
-  ) {
-
-    SpreadsheetApp
-      .getUi()
-      .alert(
-        'Please select an allocation row, not the header.'
-      );
-
-    return;
-
-  }
-
-
-  /************************************************************
-   * FIND COLUMNS BY HEADER
-   ************************************************************/
-
-  const allocationIdCol =
-    findHeaderColumn(
-      logSheet,
-      'Allocation ID'
-    );
-
-
-  const paymentIdCol =
-    findHeaderColumn(
-      logSheet,
-      'Payment ID'
-    );
-
-
-  const amountCol =
-    findHeaderColumn(
-      logSheet,
-      'Amount'
-    );
-
-
-  const remarksCol =
-    findHeaderColumn(
-      logSheet,
-      'Remarks'
-    );
-
-
-  const loggedAtCol =
-    findHeaderColumn(
-      logSheet,
-      'Logged At'
-    );
-
-
-  const enteredByCol =
-    findHeaderColumn(
-      logSheet,
-      'Entered By'
-    );
-
-
-  if (
-    !allocationIdCol ||
-    !paymentIdCol ||
-    !amountCol
-  ) {
-
-    throw new Error(
-      'Payment_Allocation is missing Allocation ID, Payment ID or Amount.'
-    );
-
-  }
-
-
-  const lastColumn =
-    logSheet.getLastColumn();
-
-
-  const sourceRow =
-    logSheet
-      .getRange(
-        selectedRow,
-        1,
-        1,
-        lastColumn
-      )
-      .getValues()[0];
-
-
-  const allocationId =
-    normalizeId(
-      sourceRow[
-        allocationIdCol - 1
-      ]
-    );
-
-
-  const paymentId =
-    normalizeId(
-      sourceRow[
-        paymentIdCol - 1
-      ]
-    );
-
-
-  const originalAmount =
-    money(
-      sourceRow[
-        amountCol - 1
-      ]
-    );
-
-
-  const originalRemarks =
-    remarksCol
-      ? String(
-          sourceRow[
-            remarksCol - 1
-          ] || ''
-        )
-      : '';
-
-
-  /************************************************************
-   * VALIDATE SOURCE ALLOCATION
-   ************************************************************/
-
-  if (!allocationId) {
-
-    SpreadsheetApp
-      .getUi()
-      .alert(
-        'The selected row does not have a valid Allocation ID.'
-      );
-
-    return;
-
-  }
-
-
-  if (
-    originalAmount <= 0
-  ) {
-
-    SpreadsheetApp
-      .getUi()
-      .alert(
-        'This row cannot be reversed because it is already a reversal or has no positive allocation amount.'
-      );
-
-    return;
-
-  }
-
-
-  /************************************************************
-   * PREVENT DOUBLE REVERSAL
-   ************************************************************/
-
-  const data =
-    logSheet
-      .getDataRange()
-      .getDisplayValues();
-
-
-  const reversalMarker =
-    'REVERSAL OF ' +
-    allocationId;
-
-
-  for (
-    let i = 1;
-    i < data.length;
-    i++
-  ) {
-
-    if (!remarksCol) {
-      break;
-    }
-
-
-    const remarks =
-      String(
-        data[i][remarksCol - 1] || ''
+    const logAmountCol =
+      findHeaderColumn(
+        logSheet,
+        'Amount'
       );
 
 
     if (
-      remarks.indexOf(
-        reversalMarker
-      ) !== -1
+      !logPaymentIdCol ||
+      !logAmountCol
     ) {
 
-      SpreadsheetApp
-        .getUi()
-        .alert(
-          'This allocation has already been reversed.'
+      throw new Error(
+        'Payment_Allocation must contain Payment ID and Amount columns.'
+      );
+
+    }
+
+
+    for (
+      let i = 1;
+      i < allocationData.length;
+      i++
+    ) {
+
+      const paymentId =
+        normalize(
+          allocationData[i]
+            [logPaymentIdCol - 1]
         );
 
-      return;
+
+      const amount =
+        money(
+          allocationData[i]
+            [logAmountCol - 1]
+        );
+
+
+      if (!paymentId) {
+        continue;
+      }
+
+
+      allocatedLookup[paymentId] =
+        (
+          allocatedLookup[paymentId] ||
+          0
+        ) + amount;
 
     }
 
   }
 
 
-  /************************************************************
-   * ASK FOR CONFIRMATION
-   ************************************************************/
-
-  const ui =
-    SpreadsheetApp.getUi();
+  const lastRow =
+    inflow.getLastRow();
 
 
-  const response =
-    ui.alert(
-      'Reverse Allocation',
-      'You are about to reverse:\n\n' +
-
-      'Allocation ID: ' +
-      allocationId +
-      '\n' +
-
-      'Payment ID: ' +
-      paymentId +
-      '\n' +
-
-      'Amount: ₦' +
-      originalAmount.toLocaleString() +
-      '\n\n' +
-
-      'The original allocation will remain in the audit trail.\n\n' +
-
-      'Continue?',
-      ui.ButtonSet.YES_NO
-    );
-
-
-  if (
-    response !==
-    ui.Button.YES
+  for (
+    let row = 2;
+    row <= lastRow;
+    row++
   ) {
 
-    return;
-
-  }
-
-
-  /************************************************************
-   * CREATE REVERSAL ROW
-   ************************************************************/
-
-  const reversalRow =
-    sourceRow.slice();
+    const amountReceived =
+      money(
+        inflow
+          .getRange(
+            row,
+            CONFIG.INFLOW.AMOUNT_RECEIVED
+          )
+          .getValue()
+      );
 
 
-  const timestamp =
-    new Date();
+    if (
+      amountReceived <= 0
+    ) {
+      continue;
+    }
 
 
-  const reversalId =
-    'REV-' +
-    allocationId +
-    '-' +
-    Utilities.formatDate(
-      timestamp,
-      ss.getSpreadsheetTimeZone(),
-      'yyyyMMddHHmmss'
-    );
+    const paymentId =
+      ensurePaymentId(
+        inflow,
+        row
+      );
 
 
-  reversalRow[
-    allocationIdCol - 1
-  ] =
-    reversalId;
+    const allocated =
+      allocatedLookup[
+        normalize(paymentId)
+      ] || 0;
 
 
-  reversalRow[
-    amountCol - 1
-  ] =
-    -Math.abs(
-      originalAmount
-    );
+    const remaining =
+      amountReceived -
+      allocated;
 
 
-  if (remarksCol) {
+    let status =
+      'UNALLOCATED';
 
-    reversalRow[
-      remarksCol - 1
-    ] =
-      reversalMarker +
-      (
-        originalRemarks
-          ? ' | Original remark: ' +
-            originalRemarks
-          : ''
+
+    if (
+      Math.abs(remaining) <=
+      CONFIG.TOLERANCE
+    ) {
+
+      status =
+        'FULLY ALLOCATED';
+
+    } else if (
+      allocated > 0
+    ) {
+
+      status =
+        'PARTIALLY ALLOCATED';
+
+    }
+
+
+    inflow
+      .getRange(
+        row,
+        allocatedCol
+      )
+      .setValue(
+        allocated
+      );
+
+
+    inflow
+      .getRange(
+        row,
+        unallocatedCol
+      )
+      .setValue(
+        remaining
+      );
+
+
+    inflow
+      .getRange(
+        row,
+        statusCol
+      )
+      .setValue(
+        status
       );
 
   }
 
+}
 
-  if (loggedAtCol) {
 
-    reversalRow[
-      loggedAtCol - 1
-    ] =
-      timestamp;
+/************************************************************
+ * UPDATE ONE DAILY INFLOW PAYMENT STATUS
+ *
+ * Fast version used after posting or reversing
+ * a single payment.
+ *
+ * Only the specified Payment ID is recalculated.
+ ************************************************************/
+
+function updateSingleInflowAllocationStatus(
+  paymentId
+) {
+
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+
+  const inflow =
+    ss.getSheetByName(
+      CONFIG.INFLOW_SHEET
+    );
+
+
+  const logSheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+
+  if (!inflow) {
+
+    throw new Error(
+      'Daily Inflow sheet was not found.'
+    );
 
   }
 
 
-  if (enteredByCol) {
+  if (!logSheet) {
 
-    reversalRow[
-      enteredByCol - 1
-    ] =
-      Session
-        .getActiveUser()
-        .getEmail();
+    throw new Error(
+      'Payment_Allocation sheet was not found.'
+    );
+
+  }
+
+
+  const normalizedPaymentId =
+    normalize(
+      paymentId
+    );
+
+
+  if (!normalizedPaymentId) {
+
+    throw new Error(
+      'A valid Payment ID is required.'
+    );
 
   }
 
 
   /************************************************************
-   * APPEND REVERSAL
+   * FIND REQUIRED DAILY INFLOW COLUMNS
    ************************************************************/
 
-  logSheet
-    .appendRow(
-      reversalRow
+  const paymentIdCol =
+    findHeaderColumn(
+      inflow,
+      'Payment ID'
+    );
+
+
+  const allocatedCol =
+    findHeaderColumn(
+      inflow,
+      'Allocated Amount'
+    );
+
+
+  const unallocatedCol =
+    findHeaderColumn(
+      inflow,
+      'Unallocated Amount'
+    );
+
+
+  const statusCol =
+    findHeaderColumn(
+      inflow,
+      'Allocation Status'
+    );
+
+
+  if (
+    !paymentIdCol ||
+    !allocatedCol ||
+    !unallocatedCol ||
+    !statusCol
+  ) {
+
+    throw new Error(
+      'Required allocation columns were not found on Daily Inflow.'
+    );
+
+  }
+
+
+  /************************************************************
+   * FIND THE PAYMENT ROW
+   ************************************************************/
+
+  const lastInflowRow =
+    inflow.getLastRow();
+
+
+  if (
+    lastInflowRow < 2
+  ) {
+
+    throw new Error(
+      'No payment records were found in Daily Inflow.'
+    );
+
+  }
+
+
+  const paymentIds =
+    inflow
+      .getRange(
+        2,
+        paymentIdCol,
+        lastInflowRow - 1,
+        1
+      )
+      .getDisplayValues();
+
+
+  let paymentRow = 0;
+
+
+  for (
+    let i = 0;
+    i < paymentIds.length;
+    i++
+  ) {
+
+    if (
+      normalize(
+        paymentIds[i][0]
+      ) ===
+      normalizedPaymentId
+    ) {
+
+      paymentRow =
+        i + 2;
+
+      break;
+
+    }
+
+  }
+
+
+  if (!paymentRow) {
+
+    throw new Error(
+      'Payment ID was not found in Daily Inflow: ' +
+      paymentId
+    );
+
+  }
+
+
+  /************************************************************
+   * READ AMOUNT RECEIVED
+   ************************************************************/
+
+  const amountReceived =
+    money(
+      inflow
+        .getRange(
+          paymentRow,
+          CONFIG.INFLOW.AMOUNT_RECEIVED
+        )
+        .getValue()
     );
 
 
   /************************************************************
-   * REFRESH ALL BALANCES
+   * CALCULATE CURRENT ALLOCATED TOTAL
+   *
+   * getAllocatedTotalForPayment() reads the permanent
+   * Payment_Allocation ledger.
+   *
+   * Negative reversal entries automatically reduce
+   * the allocated amount.
    ************************************************************/
 
-  updateInflowAllocationStatus();
+  const allocated =
+    getAllocatedTotalForPayment(
+      paymentId
+    );
 
-  updateStudentMasterPayments();
+
+  let remaining =
+    amountReceived -
+    allocated;
 
 
-  ui.alert(
-    'Allocation Reversed Successfully\n\n' +
+  /*
+   * Prevent tiny floating-point values such as
+   * 0.00000001 from appearing as an outstanding amount.
+   */
 
-    'Original Allocation: ' +
-    allocationId +
-    '\n' +
+  if (
+    Math.abs(remaining) <=
+    CONFIG.TOLERANCE
+  ) {
 
-    'Reversed Amount: ₦' +
-    originalAmount.toLocaleString() +
-    '\n\n' +
+    remaining = 0;
 
-    'The original transaction has been preserved in Payment_Allocation.'
-  );
+  }
+
+
+  /************************************************************
+   * DETERMINE STATUS
+   ************************************************************/
+
+  let status =
+    'UNALLOCATED';
+
+
+  if (
+    remaining === 0
+  ) {
+
+    status =
+      'FULLY ALLOCATED';
+
+  } else if (
+    allocated > 0
+  ) {
+
+    status =
+      'PARTIALLY ALLOCATED';
+
+  }
+
+
+  /************************************************************
+   * UPDATE ONLY THIS PAYMENT
+   ************************************************************/
+
+  inflow
+    .getRange(
+      paymentRow,
+      allocatedCol
+    )
+    .setValue(
+      allocated
+    );
+
+
+  inflow
+    .getRange(
+      paymentRow,
+      unallocatedCol
+    )
+    .setValue(
+      remaining
+    );
+
+
+  inflow
+    .getRange(
+      paymentRow,
+      statusCol
+    )
+    .setValue(
+      status
+    );
+
+
+  return {
+
+    paymentRow:
+      paymentRow,
+
+    amountReceived:
+      amountReceived,
+
+    allocated:
+      allocated,
+
+    remaining:
+      remaining,
+
+    status:
+      status
+
+  };
 
 }
 
@@ -4557,5 +6420,1087 @@ function formatFamilyHistorySection(
     .setValue(
       title
     );
+
+}
+
+/************************************************************
+ * SHOW ITEM PAYMENT REPORT
+ *
+ * Generates a student-level payment report for:
+ *
+ * - Textbooks
+ * - School Uniforms
+ * - Sports Wear
+ * - Friday Wear
+ *
+ * Expected Amount Due -> Parent Master
+ * Actual Payments     -> Payment_Allocation
+ *
+ * Permanent Student ID is the matching key.
+ ************************************************************/
+
+function showItemPaymentReport() {
+
+  const ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+  const ui =
+    SpreadsheetApp.getUi();
+
+
+  /************************************************************
+   * SELECT ITEM
+   ************************************************************/
+
+  const itemResponse =
+    ui.prompt(
+      'Item Payment Report',
+      'Enter one of the following:\n\n' +
+      'Textbooks\n' +
+      'School Uniforms\n' +
+      'Sports Wear\n' +
+      'Friday Wear',
+      ui.ButtonSet.OK_CANCEL
+    );
+
+
+  if (
+    itemResponse.getSelectedButton() !==
+    ui.Button.OK
+  ) {
+    return;
+  }
+
+
+  const itemEntered =
+    String(
+      itemResponse.getResponseText() || ''
+    )
+      .trim()
+      .toUpperCase();
+
+
+  /*
+   * Maps the user's selection to:
+   *
+   * 1. Payment_Allocation category name
+   * 2. Parent Master expected-charge column
+   */
+
+  const itemConfig = {
+
+    'TEXTBOOKS': {
+      name: 'Textbooks',
+      parentColumn:
+        CONFIG.PARENT.TEXTBOOKS
+    },
+
+    'SCHOOL UNIFORMS': {
+      name: 'School Uniforms',
+      parentColumn:
+        CONFIG.PARENT.SCHOOL_UNIFORMS
+    },
+
+    'SPORTS WEAR': {
+      name: 'Sports Wear',
+      parentColumn:
+        CONFIG.PARENT.SPORTS_WEAR
+    },
+
+    'FRIDAY WEAR': {
+      name: 'Friday Wear',
+      parentColumn:
+        CONFIG.PARENT.FRIDAY_WEAR
+    }
+
+  };
+
+
+  const selectedItem =
+    itemConfig[
+      itemEntered
+    ];
+
+
+  if (!selectedItem) {
+
+    ui.alert(
+      'Invalid item.\n\n' +
+      'Please enter exactly one of:\n\n' +
+      'Textbooks\n' +
+      'School Uniforms\n' +
+      'Sports Wear\n' +
+      'Friday Wear'
+    );
+
+    return;
+
+  }
+
+
+  /************************************************************
+   * SELECT VIEW
+   ************************************************************/
+
+  const viewResponse =
+    ui.prompt(
+      selectedItem.name +
+      ' Payment Report',
+      'Enter the view you want:\n\n' +
+      'ALL\n' +
+      'PAID\n' +
+      'PART PAID\n' +
+      'NOT PAID',
+      ui.ButtonSet.OK_CANCEL
+    );
+
+
+  if (
+    viewResponse.getSelectedButton() !==
+    ui.Button.OK
+  ) {
+    return;
+  }
+
+
+  const selectedView =
+    String(
+      viewResponse.getResponseText() || ''
+    )
+      .trim()
+      .toUpperCase();
+
+
+  const validViews = [
+    'ALL',
+    'PAID',
+    'PART PAID',
+    'NOT PAID'
+  ];
+
+
+  if (
+    !validViews.includes(
+      selectedView
+    )
+  ) {
+
+    ui.alert(
+      'Invalid view.\n\n' +
+      'Please enter one of:\n\n' +
+      'ALL\n' +
+      'PAID\n' +
+      'PART PAID\n' +
+      'NOT PAID'
+    );
+
+    return;
+
+  }
+
+
+  /************************************************************
+   * GET SHEETS
+   ************************************************************/
+
+  const parentSheet =
+    ss.getSheetByName(
+      CONFIG.PARENT_STUDENT_SHEET
+    );
+
+
+  const allocationSheet =
+    ss.getSheetByName(
+      CONFIG.ALLOCATION_LOG_SHEET
+    );
+
+
+  if (!parentSheet) {
+
+    throw new Error(
+      'Parent/Student Financial Record sheet was not found.'
+    );
+
+  }
+
+
+  if (!allocationSheet) {
+
+    throw new Error(
+      'Payment_Allocation sheet was not found.'
+    );
+
+  }
+
+
+  /************************************************************
+   * FIND / CREATE REPORT SHEET
+   ************************************************************/
+
+  let reportSheet =
+    ss.getSheetByName(
+      CONFIG.ITEM_PAYMENT_REPORT_SHEET
+    );
+
+
+  if (!reportSheet) {
+
+    reportSheet =
+      ss.insertSheet(
+        CONFIG.ITEM_PAYMENT_REPORT_SHEET
+      );
+
+  }
+
+
+  reportSheet.clear();
+
+
+  /************************************************************
+   * READ PARENT MASTER
+   ************************************************************/
+
+  const parentData =
+    parentSheet
+      .getDataRange()
+      .getValues();
+
+
+  const parentFamilyIdCol =
+    findHeaderColumnInRows(
+      parentSheet,
+      'Family ID',
+      1,
+      3
+    );
+
+
+  const parentStudentIdCol =
+    findHeaderColumnInRows(
+      parentSheet,
+      'Student ID',
+      1,
+      3
+    );
+
+
+  if (
+    !parentFamilyIdCol ||
+    !parentStudentIdCol
+  ) {
+
+    throw new Error(
+      'Family ID and Student ID must exist on Parent Master.'
+    );
+
+  }
+
+
+  /*
+   * Student ID -> student information
+   */
+
+  const students = {};
+
+
+  let currentFamilyId = '';
+
+
+  for (
+    let i = 3;
+    i < parentData.length;
+    i++
+  ) {
+
+    const rowFamilyId =
+      normalizeId(
+        parentData[i]
+          [parentFamilyIdCol - 1]
+      );
+
+
+    if (rowFamilyId) {
+
+      currentFamilyId =
+        rowFamilyId;
+
+    }
+
+
+    const studentId =
+      normalizeId(
+        parentData[i]
+          [parentStudentIdCol - 1]
+      );
+
+
+    const studentName =
+      parentData[i]
+        [CONFIG.PARENT.STUDENT_NAME - 1];
+
+
+    /*
+     * Ignore blank/non-student rows.
+     */
+
+    if (
+      !studentId ||
+      !normalize(studentName)
+    ) {
+
+      continue;
+
+    }
+
+
+    students[studentId] = {
+
+      studentId:
+        studentId,
+
+      studentNo:
+        parentData[i]
+          [CONFIG.PARENT.STUDENT_NO - 1],
+
+      studentName:
+        studentName,
+
+      studentClass:
+        parentData[i]
+          [CONFIG.PARENT.STUDENT_CLASS - 1],
+
+      familyId:
+        currentFamilyId,
+
+      expectedDue:
+        money(
+          parentData[i]
+            [selectedItem.parentColumn - 1]
+        ),
+
+      expectedPaid:
+        0,
+
+      additionalPurchase:
+        0,
+
+      /*
+       * Positive payment dates only.
+       */
+
+      positivePaymentDates: []
+
+    };
+
+  }
+
+
+  /************************************************************
+   * READ PAYMENT ALLOCATION
+   ************************************************************/
+
+  const allocationData =
+    allocationSheet
+      .getDataRange()
+      .getValues();
+
+
+  const allocationStudentIdCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Student ID'
+    );
+
+
+  const allocationCategoryCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Category'
+    );
+
+
+  const allocationAmountCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Amount'
+    );
+
+
+  const allocationDateCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Payment Date'
+    );
+
+
+  const allocationPaymentTypeCol =
+    findHeaderColumn(
+      allocationSheet,
+      'Payment Type'
+    );
+
+
+  if (
+    !allocationStudentIdCol ||
+    !allocationCategoryCol ||
+    !allocationAmountCol
+  ) {
+
+    throw new Error(
+      'Payment_Allocation must contain Student ID, Category and Amount columns.'
+    );
+
+  }
+
+
+  /************************************************************
+   * SUM ACTUAL PAYMENTS
+   ************************************************************/
+
+  for (
+    let i = 1;
+    i < allocationData.length;
+    i++
+  ) {
+
+    const studentId =
+      normalizeId(
+        allocationData[i]
+          [allocationStudentIdCol - 1]
+      );
+
+
+    if (
+      !studentId ||
+      !students[studentId]
+    ) {
+
+      continue;
+
+    }
+
+
+    const category =
+      String(
+        allocationData[i]
+          [allocationCategoryCol - 1] ||
+        ''
+      )
+        .trim()
+        .toUpperCase();
+
+
+    /*
+     * Only process the selected item.
+     */
+
+    if (
+      category !==
+      selectedItem.name.toUpperCase()
+    ) {
+
+      continue;
+
+    }
+
+
+    const amount =
+      money(
+        allocationData[i]
+          [allocationAmountCol - 1]
+      );
+
+
+    /*
+     * Old allocations with no Payment Type
+     * are treated as EXPECTED.
+     */
+
+    const paymentType =
+      allocationPaymentTypeCol
+        ? String(
+            allocationData[i]
+              [allocationPaymentTypeCol - 1] ||
+            'EXPECTED'
+          )
+            .trim()
+            .toUpperCase()
+        : 'EXPECTED';
+
+
+    if (
+      paymentType ===
+      'ADDITIONAL PURCHASE'
+    ) {
+
+      students[studentId]
+        .additionalPurchase +=
+        amount;
+
+    } else {
+
+      students[studentId]
+        .expectedPaid +=
+        amount;
+
+    }
+
+
+    /*
+     * Payment date should represent an
+     * actual positive payment.
+     *
+     * Negative reversal transactions affect
+     * the monetary totals but are not treated
+     * as a new payment date.
+     */
+
+    if (
+      amount > 0 &&
+      allocationDateCol
+    ) {
+
+      const paymentDate =
+        allocationData[i]
+          [allocationDateCol - 1];
+
+
+      if (
+        paymentDate instanceof Date &&
+        !isNaN(
+          paymentDate.getTime()
+        )
+      ) {
+
+        students[studentId]
+          .positivePaymentDates
+          .push(
+            paymentDate
+          );
+
+      }
+
+    }
+
+  }
+
+
+  /************************************************************
+   * BUILD REPORT
+   ************************************************************/
+
+  const reportRows = [];
+
+
+  Object
+    .values(
+      students
+    )
+    .forEach(
+      student => {
+
+        const expectedDue =
+          student.expectedDue;
+
+
+        /*
+         * Protect against tiny negative totals
+         * caused by reversals/data corrections.
+         */
+
+        let expectedPaid =
+          student.expectedPaid;
+
+
+        let additionalPurchase =
+          student.additionalPurchase;
+
+
+        if (
+          Math.abs(expectedPaid) <=
+          CONFIG.TOLERANCE
+        ) {
+
+          expectedPaid = 0;
+
+        }
+
+
+        if (
+          Math.abs(additionalPurchase) <=
+          CONFIG.TOLERANCE
+        ) {
+
+          additionalPurchase = 0;
+
+        }
+
+
+        const totalCollected =
+          expectedPaid +
+          additionalPurchase;
+
+
+        /********************************************************
+         * DETERMINE PAYMENT STATUS
+         *
+         * Status is based ONLY on expected charges.
+         ********************************************************/
+
+        let status =
+          'NOT PAID';
+
+
+        if (
+          expectedDue > 0 &&
+          expectedPaid >=
+            expectedDue -
+              CONFIG.TOLERANCE
+        ) {
+
+          status =
+            'PAID';
+
+        } else if (
+          expectedPaid > 0
+        ) {
+
+          status =
+            'PART PAID';
+
+        }
+
+
+        /*
+         * If there is no expected charge but
+         * the student made an Additional Purchase,
+         * we keep expected status as NOT PAID.
+         *
+         * The Additional Purchase column makes
+         * the transaction visible separately.
+         */
+
+
+        /********************************************************
+         * FILTER REPORT
+         ********************************************************/
+
+        if (
+          selectedView !==
+            'ALL' &&
+          status !==
+            selectedView
+        ) {
+
+          return;
+
+        }
+
+
+        /********************************************************
+         * LAST POSITIVE PAYMENT DATE
+         ********************************************************/
+
+        let lastPaymentDate =
+          '';
+
+
+        if (
+          student
+            .positivePaymentDates
+            .length
+        ) {
+
+          lastPaymentDate =
+            new Date(
+              Math.max(
+                ...student
+                  .positivePaymentDates
+                  .map(
+                    date =>
+                      date.getTime()
+                  )
+              )
+            );
+
+        }
+
+
+        reportRows.push({
+
+          studentId:
+            student.studentId,
+
+          studentNo:
+            student.studentNo,
+
+          studentName:
+            student.studentName,
+
+          studentClass:
+            student.studentClass,
+
+          familyId:
+            student.familyId,
+
+          expectedDue:
+            expectedDue,
+
+          expectedPaid:
+            expectedPaid,
+
+          additionalPurchase:
+            additionalPurchase,
+
+          totalCollected:
+            totalCollected,
+
+          lastPaymentDate:
+            lastPaymentDate,
+
+          status:
+            status
+
+        });
+
+      }
+    );
+
+
+  /************************************************************
+   * SORT BY CLASS THEN STUDENT NAME
+   ************************************************************/
+
+  reportRows.sort(
+    (a, b) => {
+
+      const classCompare =
+        String(
+          a.studentClass || ''
+        )
+          .localeCompare(
+            String(
+              b.studentClass || ''
+            ),
+            undefined,
+            {
+              numeric: true,
+              sensitivity: 'base'
+            }
+          );
+
+
+      if (
+        classCompare !== 0
+      ) {
+
+        return classCompare;
+
+      }
+
+
+      return String(
+        a.studentName || ''
+      )
+        .localeCompare(
+          String(
+            b.studentName || ''
+          ),
+          undefined,
+          {
+            sensitivity: 'base'
+          }
+        );
+
+    }
+  );
+
+
+  /************************************************************
+   * REPORT TITLE
+   ************************************************************/
+
+  reportSheet
+    .getRange('A1')
+    .setValue(
+      selectedItem.name.toUpperCase() +
+      ' PAYMENT REPORT'
+    )
+    .setFontWeight('bold')
+    .setFontSize(16);
+
+
+  reportSheet
+    .getRange('A2')
+    .setValue(
+      'View: ' +
+      selectedView
+    )
+    .setFontWeight('bold');
+
+
+  reportSheet
+    .getRange('A3')
+    .setValue(
+      'Generated:'
+    );
+
+
+  reportSheet
+    .getRange('B3')
+    .setValue(
+      new Date()
+    )
+    .setNumberFormat(
+      'dd/MM/yyyy hh:mm'
+    );
+
+
+  /************************************************************
+   * HEADERS
+   ************************************************************/
+
+  const headerRow = 5;
+
+
+  const headers = [[
+
+    'S/N',
+
+    'Student ID',
+
+    'Student No',
+
+    'Student Name',
+
+    'Class',
+
+    'Family ID',
+
+    'Expected Amount Due',
+
+    'Expected Amount Paid',
+
+    'Additional Purchase',
+
+    'Total Collected',
+
+    'Last Payment Date',
+
+    'Status'
+
+  ]];
+
+
+  reportSheet
+    .getRange(
+      headerRow,
+      1,
+      1,
+      headers[0].length
+    )
+    .setValues(
+      headers
+    )
+    .setFontWeight(
+      'bold'
+    );
+
+
+  /************************************************************
+   * OUTPUT DATA
+   ************************************************************/
+
+  if (
+    reportRows.length
+  ) {
+
+    const output =
+      reportRows.map(
+        (student, index) => [
+
+          index + 1,
+
+          student.studentId,
+
+          student.studentNo,
+
+          student.studentName,
+
+          student.studentClass,
+
+          student.familyId,
+
+          student.expectedDue,
+
+          student.expectedPaid,
+
+          student.additionalPurchase,
+
+          student.totalCollected,
+
+          student.lastPaymentDate,
+
+          student.status
+
+        ]
+      );
+
+
+    reportSheet
+      .getRange(
+        headerRow + 1,
+        1,
+        output.length,
+        headers[0].length
+      )
+      .setValues(
+        output
+      );
+
+
+    /************************************************************
+     * CURRENCY FORMATTING
+     *
+     * G:J
+     ************************************************************/
+
+    reportSheet
+      .getRange(
+        headerRow + 1,
+        7,
+        output.length,
+        4
+      )
+      .setNumberFormat(
+        '₦#,##0.00'
+      );
+
+
+    /************************************************************
+     * PAYMENT DATE FORMATTING
+     ************************************************************/
+
+    reportSheet
+      .getRange(
+        headerRow + 1,
+        11,
+        output.length,
+        1
+      )
+      .setNumberFormat(
+        'dd/MM/yyyy'
+      );
+
+  } else {
+
+    reportSheet
+      .getRange(
+        headerRow + 1,
+        1
+      )
+      .setValue(
+        'No students matched this report.'
+      );
+
+  }
+
+
+  /************************************************************
+   * REPORT FORMATTING
+   ************************************************************/
+
+  reportSheet
+    .setFrozenRows(
+      headerRow
+    );
+
+
+  reportSheet
+    .autoResizeColumns(
+      1,
+      headers[0].length
+    );
+
+
+  /*
+   * Keep Student ID / Family ID
+   * columns comfortably readable.
+   */
+
+  reportSheet
+    .setColumnWidth(
+      2,
+      145
+    );
+
+
+  reportSheet
+    .setColumnWidth(
+      4,
+      190
+    );
+
+
+  reportSheet
+    .setColumnWidth(
+      6,
+      130
+    );
+
+
+  reportSheet
+    .setColumnWidth(
+      7,
+      145
+    );
+
+
+  reportSheet
+    .setColumnWidth(
+      8,
+      155
+    );
+
+
+  reportSheet
+    .setColumnWidth(
+      9,
+      145
+    );
+
+
+  reportSheet
+    .setColumnWidth(
+      10,
+      130
+    );
+
+
+  reportSheet
+    .setColumnWidth(
+      11,
+      125
+    );
+
+
+  reportSheet.activate();
+
+
+  /************************************************************
+   * COMPLETE
+   ************************************************************/
+
+  ui.alert(
+    selectedItem.name +
+    ' payment report generated successfully.\n\n' +
+
+    'View: ' +
+    selectedView +
+    '\n' +
+
+    'Students shown: ' +
+    reportRows.length
+  );
 
 }
